@@ -1,0 +1,5 @@
+{
+    "__input_data_path__":"./gmoverid_cmos_sizing/data/input",
+    "__luts_path__":"./gmoverid_cmos_sizing/data/luts",
+    "__output_data_path__":"./gmoverid_cmos_sizing/data/output"
+}
