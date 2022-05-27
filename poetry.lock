@@ -110,21 +110,28 @@ setuptools_scm = ">=4"
 
 [[package]]
 name = "modelling-utils"
-version = "0.2.2"
+version = "0.2.3"
 description = " Utility functions and data structure for aiding in Analog Integrated Circuit Modelling using Python"
 category = "main"
 optional = false
-python-versions = ">=3.9,<3.11"
+python-versions = ">=3.9,<3.11" # limitted version due to scipy
+develop = false
 
 [package.dependencies]
-cycler = ">=0.11.0,<0.12.0"
-loguru = ">=0.6.0,<0.7.0"
-matplotlib = ">=3.5.2,<4.0.0"
-numpy = ">=1.22.3,<2.0.0"
-pandas = ">=1.4.2,<2.0.0"
-PyYAML = ">=6.0,<7.0"
-seaborn = ">=0.11.2,<0.12.0"
-toml = ">=0.10.2,<0.11.0"
+cycler = "^0.11.0"
+loguru = "^0.6.0"
+matplotlib = "^3.5.2"
+numpy = "^1.22.3"
+pandas = "^1.4.2"
+PyYAML = "^6.0"
+seaborn = "^0.11.2"
+toml = "^0.10.2"
+
+[package.source]
+type = "git"
+url = "https://github.com/das-dias/modelling_utils.git"
+reference = "master"
+resolved_reference = "ccc0d8f28096f363abd9c32a5b782fb1d37151b8"
 
 [[package]]
 name = "more-itertools"
@@ -371,7 +378,7 @@ dev = ["pytest (>=4.6.2)", "black (>=19.3b0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.11"
-content-hash = "210066d33843dd5ffe4ff0b20b54414aa16788fcb30841379874902de9f81e76"
+content-hash = "d116917c1a088fad8e4821fcce311baed9b0c9da3ad2ccd7862189a0d5422fa5"
 
 [metadata.files]
 argparse = [
@@ -484,10 +491,7 @@ matplotlib = [
     {file = "matplotlib-3.5.2-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:24173c23d1bcbaed5bf47b8785d27933a1ac26a5d772200a0f3e0e38f471b001"},
     {file = "matplotlib-3.5.2.tar.gz", hash = "sha256:48cf850ce14fa18067f2d9e0d646763681948487a8080ec0af2686468b4607a2"},
 ]
-modelling-utils = [
-    {file = "modelling_utils-0.2.2-py3-none-any.whl", hash = "sha256:811d2ad287139afdcd28b51f1792c417d728a12941198faeed36f53bc2429922"},
-    {file = "modelling_utils-0.2.2.tar.gz", hash = "sha256:23002c754c063d392ecc0fd38b582f5df81f0ab3a0d025fc118100828e1cc9a8"},
-]
+modelling-utils = []
 more-itertools = [
     {file = "more-itertools-8.13.0.tar.gz", hash = "sha256:a42901a0a5b169d925f6f217cd5a190e32ef54360905b9c39ee7db5313bfec0f"},
     {file = "more_itertools-8.13.0-py3-none-any.whl", hash = "sha256:c5122bffc5f104d37c1626b8615b511f3427aa5389b94d61e5ef8236bfbc3ddb"},

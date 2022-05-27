@@ -11,7 +11,8 @@ pandas = "^1.4.2"
 argparse = "^1.4.0"
 loguru = "^0.6.0"
 tabulate = "^0.8.9"
-modelling-utils = "^0.2.2"
+modelling-utils={git="https://github.com/das-dias/modelling_utils.git"}
+
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 unittest = "^0.0"

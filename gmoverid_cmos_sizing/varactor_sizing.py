@@ -20,7 +20,7 @@ from modelling_utils import(
 )
 import argparse
 
-def gmoverid_varactor_sizing_console_parsing(subparser, *args, **kwargs):
+def varactor_sizing_console_parsing(subparser, *args, **kwargs):
     """
     Function to call the script that will computes
     transistor sizing from the parsed specification data.
@@ -40,33 +40,22 @@ def gmoverid_varactor_sizing_console_parsing(subparser, *args, **kwargs):
         argv = subparser.parse_args(sysargs[1:])
     except Exception as e:
         log.error(traceback.format_exc())
+    
     # handle optional mutually exclusive arguments
-    if not(bool(argv.v_source_drain) or bool(argv.v_source_bulk) or bool(argv.v_drain_source) or bool(argv.v_bulk_source)):
-        raise ValueError("At least two of the following DOF -vsd, -vsb, -vds, -vbs are required")
+    if not(bool(argv.v_source_gate) or bool(argv.v_gate_source) ):
+        raise ValueError("At least two of the following DOF -vgs or -vsg are required")
     
-    if bool(argv.v_source_drain) and bool(argv.v_drain_source):
-        raise ValueError("-vsd and -vds are mutually exclusive")
-    if bool(argv.v_bulk_source) and bool(argv.v_source_bulk):
-        raise ValueError("-vbs and -vsb are mutually exclusive")
-    
-    if (bool(argv.v_source_bulk) and not(bool(argv.v_drain_source))) or (bool(argv.v_drain_source) and not(bool(argv.v_source_bulk))):
-        raise ValueError("-vds and -vsb are required at the same time")
-    
-    if (bool(argv.v_bulk_source) and not(bool(argv.v_source_drain))) or (bool(argv.v_source_drain) and not(bool(argv.v_bulk_source))):
-        raise ValueError("-vsd and -vbs are required at the same time")
+    if bool(argv.v_source_gate) and bool(argv.v_gate_source):
+        raise ValueError("-vsg and -vgs are mutually exclusive")
     
     # extract device parameters
     device = MosCell()
     device.__parse_data__("type", argv.type[0])
     device.__parse_data__("l", argv.length[0])
-    device.__parse_data__("gmoverid", argv.gm_over_id[0])
-    if device.type[0] == "nch":
-        device.__parse_data__("vds", argv.v_drain_source[0])
-        device.__parse_data__("vsb", argv.v_source_bulk[0])
+    if device.type == "nch":
+        device.__parse_data__("vgs", argv.v_gate_source[0])
     else:
-        device.__parse_data__("vsd", argv.v_source_drain[0])
-        device.__parse_data__("vbs", argv.v_bulk_source[0])
-    device.__parse_data__("id", argv.drive_current[0])
+        device.__parse_data__("vsg", argv.v_source_gate[0])
     # extract necessary data
     io = {}
     with open(io_json, "r") as f:
@@ -82,7 +71,7 @@ def gmoverid_varactor_sizing_console_parsing(subparser, *args, **kwargs):
     # perform sizing
     varactor_sizing(device,lut, output_data_path, verbose=True)
 
-def gmoverid_varactor_sizing_toml_parsing(subparser, *args, **kwargs):
+def varactor_sizing_toml_parsing(subparser, *args, **kwargs):
     """
     Function to call the script that will computes
     transistor sizing from the parsed specification data.
@@ -116,8 +105,8 @@ def gmoverid_varactor_sizing_toml_parsing(subparser, *args, **kwargs):
     luts_path = io.get("__luts_path__")
     output_data_path = io.get("__output_data_path__")
     # from the arguments, extract the necessary info to proceed with the computation
-    plut_name = "pcell.csv" 
-    nlut_name = "ncell.csv"
+    plut_name = "pvaractor.csv" 
+    nlut_name = "nvaractor.csv"
     # load lut data
     load_luts(data_path)
     # read lut data from memory
@@ -139,19 +128,19 @@ def varactors_sizing(devices:Devices, plut:DataFrame, nlut:DataFrame, output_dir
     """
     # load devices from specification file
     out_row = None
-    for dev_name, device in devices.devices.items():
+    for dev_name, device in devices.varactors.items():
         if device.type == "pch":
-            cell_sizing(device, plut, output_dir, verbose = False)
+            varactor_sizing(device, plut, output_dir, verbose = False)
         else:
-            cell_sizing(device, nlut, output_dir, verbose = False)
+            varactor_sizing(device, nlut, output_dir, verbose = False)
     # for each device, compute the sizing
     if verbose:
         print(devices)
     # output the sizing results to a yaml file
-    devices.__data_frame__().to_json(os.path.join(output_dir, "devices.json"))
-    devices.__data_frame__().to_json(os.path.join(output_dir, "devices.csv"))
-    devices.__data_frame__().to_markdown(os.path.join(output_dir, "devices.md"))
-    devices.__data_frame__().to_latex(os.path.join(output_dir, "devices.tex"))
+    devices.__data_frame__().to_json(os.path.join(output_dir, "varactors.json"))
+    devices.__data_frame__().to_json(os.path.join(output_dir, "varactors.csv"))
+    devices.__data_frame__().to_markdown(os.path.join(output_dir, "varactors.md"))
+    devices.__data_frame__().to_latex(os.path.join(output_dir, "varactors.tex"))
 
 @timer
 def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbose:bool = False):
@@ -165,9 +154,8 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
         log.info(f"Computing {device.name} transistor sizing...")
     # retrieve the device's control parameters
     l = device.l # length
-    gm_id = device.gmoverid # gm over id
-    vbg = np.abs(device.vbg) # drain to source voltage in absolute value
-    id = device.id # drain current
+    cvar = device.cvar
+    vgs = np.abs(device.vgs)
     # compute the closest transistor parameters of the lut in relation to the control parameters
     def eucl_dist(pt2:list=[], pt1:list=[], weights = []) -> float:
         if len(pt2) != len(pt1):
@@ -176,13 +164,14 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
         # using mahanolis distance computation for unitary correlation between the two variables pt1 and pt2
         dif = np.multiply(np.array(pt2)-np.array(pt1), ws)
         return np.dot(dif.T, dif)
-    columns = ["l", "gmoverid", "vds", "vsb"] if device.type == "nch" else ["l", "gmoverid", "vsd", "vbs"]
-    control= {k:v for k,v in zip(columns, [l, gm_id, vds, vsb])}
+    
+    columns = ["l", "cvar", "vgs"] if device.type == "nch" else ["l", "cvar", "vsg"]
+    control= {k:v for k,v in zip(columns, [l, cvar, vgs])}
     
     # compute the closest vsd and vsb values to the parsed values
     # and limit the look up table to those values
-    vpoint = [vds, vsb]
-    vcols = [columns[-2], columns[-1]]
+    vpoint = [vgs]
+    vcols = [columns[-1]]
     indexes = [ k for k, row in lut[vcols].iterrows() if eucl_dist(vpoint, list(row)) == np.min([eucl_dist(vpoint, list(row2)) for _, row2 in lut[vcols].iterrows()])]
     rows = [lut.iloc[i] for i in indexes]
     filtered_lut = DataFrame(rows)
@@ -194,40 +183,48 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
     # for all the entries corresponding to the control vds and vsb given,
     # compute the new table entries
     
-    query = f"{columns[-2]}=={control_row[columns[-2]]} & {columns[-1]}=={control_row[columns[-1]]}"
+    query = f"{columns[0]}=={control_row[columns[0]]} & {columns[1]}=={control_row[columns[1]]}"
     new_lut = lut[lut.eval(query)]
-    new_lut["w"] = compute_width(old_width, control_row['id'], id)
-    new_lut["gm"] = [compute_gm(ogm, old_width, w) for ogm, w in zip( new_lut["gm"], new_lut["w"])]
-    new_lut["id"] = [gm/gmid for gm, gmid in zip(new_lut["gm"], new_lut["gmoverid"])]
-    new_lut["gds"] = [compute_gds(ogds, old_width, w) for ogds, w in zip(new_lut["gds"], new_lut["w"])]
+    new_lut["w"] = old_width*(cvar/control_row['cvar'])
+    new_lut["id"] = [id*(w/old_width) for id,w  in zip(new_lut["id"], new_lut["w"])]
+    new_lut["gds"] = [ogds*(w/old_width) for ogds, w in zip(new_lut["gds"], new_lut["w"])]
+    new_lut["ron"] = [ron*(old_width/w) for ron,w  in zip(new_lut["ron"], new_lut["w"])]
     #new_lut["self_gain"] = [gm/gds for gm, gds in zip(new_lut["gm"], new_lut["gds"])]
-    new_lut["cgs"] = [compute_cgs(ocgs, old_width, w) for ocgs, w in zip(new_lut["cgs"], new_lut["w"])]
-    new_lut["cgd"] = [compute_cgd(ocgd, old_width, w) for ocgd, w in zip(new_lut["cgd"], new_lut["w"])]
-    new_lut["csb"] = [compute_csb(ocsb, old_width, w) for ocsb, w in zip(new_lut["csb"], new_lut["w"])]
-    new_lut["cdb"] = [compute_csb(ocdb, old_width, w) for ocdb, w in zip(new_lut["cdb"], new_lut["w"])]
+    new_lut["cgs"] = [ocgs*(w/old_width) for ocgs, w in zip(new_lut["cgs"], new_lut["w"])]
+    new_lut["cgd"] = [ocgd*(w/old_width) for ocgd, w in zip(new_lut["cgd"], new_lut["w"])]
+    new_lut["csb"] = [ocsb*(w/old_width) for ocsb, w in zip(new_lut["csb"], new_lut["w"])]
+    new_lut["cdb"] = [ocdb*(w/old_width) for ocdb, w in zip(new_lut["cdb"], new_lut["w"])]
+    new_lut["cgg"] = [ocgg*(w/old_width) for ocgg, w in zip(new_lut["cgg"], new_lut["w"])]
+    new_lut["cdep"] = [ocdep*(w/old_width) for ocdep, w in zip(new_lut["cdep"], new_lut["w"])]
+    new_lut["cvar"] = [cv*(w/old_width) for cv,w in zip(new_lut["cvar", new_lut["w"]])]
+    
     #new_lut["ft"] = [compute_ft(gm, cgs, cgd, csb, cdb) for gm, cgs, cgd, csb, cdb in zip(new_lut["gm"], new_lut["cgs"], new_lut["cgd"], new_lut["csb"], new_lut["cdb"])]
     # ft, gm/gds, gm/id and vearly all width independant parameters
     
     # print the graphs of the new transistor parameters for the fixed vds and vsb
-    yy = [np.array(list(new_lut[col]/scaling_factor)) for col,scaling_factor in {"id": Scale.MILI.value[1], "gmoverid": 1, "self_gain" : 1, "ft" : Scale.GIGA.value[1]}.items()]
-    labels = ["Drive Current [mA]", "Gm/Id [V^-01]", "Self-Gain [SS^-01]", "Ft [GHz]"]
-    file_names = ["drive_current", "gm_over_id", "self_gain", "ft"]
-    x = list(new_lut["vgs"])
-    xlabel = "Vgs [V]"
+    cap_cols = ["cvar", "cdep", "cgg", "cdb", "csb", "cgd", "cgs"]
+    cap_scale = {k:Scale.FEMTO.value[1] for k in cap_cols}
+    ycap = [np.array(list(new_lut[col]/scaling_factor)) for col,scaling_factor in cap_scale]
+    yy = [ycap] + [np.array(list(new_lut[col]/scaling_factor)) for col,scaling_factor in {"id": Scale.MICRO.value[1], "ron": 1, "gds" :Scale.MILI.values[1] }.items()]
+    labels = ["Parasitic Capacitances [fF]", "Id [uA]", "Ron [\u03A9]", "gds [mS]"]
+    file_names = ["caps", "id", "ron", "gds"]
+    vgs_col = columns[-1]
+    x = list(new_lut[vgs_col])
+    xlabel = "Vgs [V]" if device.type == "nch" else "Vsg [V]"
     for y, label, fname in zip(yy, labels, file_names):
         plot_function(x=x, y=y, labels=[label], xlabel=xlabel, ylabel=label, title=f"{label} vs. {xlabel}", show=False, filename=f"{device.name}-{fname}.png")
     
-    output_vgs = control_row["vgs"]
-    query = f"vgs=={output_vgs}"
+    output_vgs = control_row[vgs_col]
+    query = f"{vgs_col}=={output_vgs}"
     output_row = new_lut[new_lut.eval(query)]
     
     # build device data
     for col in output_row.columns:
         if col in [var for var in dir(device) if not var.startswith("__")]:
             setattr(device, col, output_row[col].values[0])
-    output_row = output_row[[col for col in [var for var in dir(device) if not var.startswith("__")] if col in output_row.columns]].set_index("vgs")
+    output_row = output_row[[col for col in [var for var in dir(device) if not var.startswith("__")] if col in output_row.columns]].set_index(vgs_col)
     if verbose:
-        log.info("Transistor sizing computed.")
-        print(f"Device : {device.name}")
+        log.info("Transistor sizing completed.")
+        print(f"Varactor : {device.name}")
         print(output_row)
     return device, output_row
