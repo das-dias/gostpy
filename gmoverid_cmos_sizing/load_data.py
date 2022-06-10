@@ -17,6 +17,8 @@ __pcell_lut = pd.DataFrame() # p channel mos transistor lookup table
 __ncell_lut = pd.DataFrame() # n channel mos transistor lookup table
 __nvaractor_lut = pd.DataFrame() # n channel varactor lookup table
 __pvaractor_lut = pd.DataFrame() # p channel varactor lookup table
+__nswitch_lut = pd.DataFrame() # n channel switch cmos
+__pswitch_lut = pd.DataFrame() # p channel switch cmos
 __pcell_rf_lut = pd.DataFrame() # p channel mos transistor rf lookup table
 __ncell_rf_lut = pd.DataFrame() # n channel mos transistor rf lookup tables
 
@@ -27,6 +29,8 @@ __folders = {
     "pcell": __pcell_lut,
     "nvaractor": __nvaractor_lut,
     "pvaractor": __pvaractor_lut,
+    "nswitch": __nswitch_lut,
+    "pswitch": __pswitch_lut,
     "rf_ncell": __ncell_rf_lut,
     "rf_pcell": __pcell_rf_lut,
 }
@@ -53,16 +57,18 @@ def main():
     for folder in __folders.keys():
         path = os.path.join(__input_data_path, folder)
         if os.path.exists(path):
+            logger.info(f"Loading {folder} data...")
             for file in os.listdir(path):
                 if file.endswith(".csv"):
                     try:
                         # read in the data
                         lut = read_lut(os.path.join(path, file))
                         # adjoint the data to the existing data
-                        __folders[folder] = pd.concat( [__folders[folder], lut])
+                        __folders[folder] = pd.concat( [__folders[folder], lut], ignore_index=True)
                         logger.info(f"Loaded {file}")
                     except Exception as ex:
                         logger.warning(traceback.format_exc())
+            print()
         else:
             logger.warning(f"{path} does not exist")
     # after importing the data, write it to the output path

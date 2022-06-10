@@ -1,7 +1,8 @@
 from loguru import logger as log
-from utils import *
+from gmoverid_cmos_sizing.utils import *
 import json
 import pandas as pd
+from numpy.linalg import norm
 from pandas import DataFrame
 import traceback
 import warnings
@@ -151,70 +152,69 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
         lut (DataFrame): _description_
     """
     if verbose:
-        log.info(f"Computing {device.name} transistor sizing...")
+        log.info(f"Computing {device.name} varactor sizing...")
     # retrieve the device's control parameters
     l = device.l # length
     cvar = device.cvar
+    # cvar = cgg + cgs + cgd
     vgs = np.abs(device.vgs)
     # compute the closest transistor parameters of the lut in relation to the control parameters
-    def eucl_dist(pt2:list=[], pt1:list=[], weights = []) -> float:
+    def weighted_norm(row, pt1, cols=[], weights=[], p=1) -> float:
+        pt2 = [row[col] for col in cols]
         if len(pt2) != len(pt1):
             raise ValueError("The two points must have the same dimension")
         ws = np.array(weights) if len(weights) == len(pt1) else np.ones(len(pt1))
-        # using mahanolis distance computation for unitary correlation between the two variables pt1 and pt2
-        dif = np.multiply(np.array(pt2)-np.array(pt1), ws)
-        return np.dot(dif.T, dif)
-    
+        vec = np.multiply(np.array(pt2)-np.array(pt1), ws)
+        return norm(vec, p)
+    new_lut = lut.copy()
+    new_lut["cvar"] = new_lut["cgg"]+new_lut["cgs"]+new_lut["cgd"]
     columns = ["l", "cvar", "vgs"] if device.type == "nch" else ["l", "cvar", "vsg"]
     control= {k:v for k,v in zip(columns, [l, cvar, vgs])}
-    
+    norm_weights = [1/new_lut[col].max() for col in control.keys()]
     # compute the closest vsd and vsb values to the parsed values
     # and limit the look up table to those values
-    vpoint = [vgs]
-    vcols = [columns[-1]]
-    indexes = [ k for k, row in lut[vcols].iterrows() if eucl_dist(vpoint, list(row)) == np.min([eucl_dist(vpoint, list(row2)) for _, row2 in lut[vcols].iterrows()])]
-    rows = [lut.iloc[i] for i in indexes]
-    filtered_lut = DataFrame(rows)
-    
-    control_point = list(control.values())
-    row_index = [ k for k, row in filtered_lut[columns].iterrows() if eucl_dist(control_point, list(row)) == np.min([eucl_dist(control_point, list(row2)) for _, row2 in filtered_lut[columns].iterrows()])][0]
-    control_row = filtered_lut.loc[row_index]
-    old_width = control_row.get("w")
+    control_dists = new_lut.apply(weighted_norm, axis=1, args=( list(control.values()), ), cols=list(control.keys()), weights=norm_weights )
+    control_row = new_lut[ new_lut.apply(weighted_norm, axis=1, args=( list(control.values()), ), cols=list(control.keys()), weights=norm_weights ) == np.min(control_dists) ].copy()
+    old_width = control_row["w"].values[0]
     # for all the entries corresponding to the control vds and vsb given,
     # compute the new table entries
     
-    query = f"{columns[0]}=={control_row[columns[0]]} & {columns[1]}=={control_row[columns[1]]}"
-    new_lut = lut[lut.eval(query)]
-    new_lut["w"] = old_width*(cvar/control_row['cvar'])
-    new_lut["id"] = [id*(w/old_width) for id,w  in zip(new_lut["id"], new_lut["w"])]
-    new_lut["gds"] = [ogds*(w/old_width) for ogds, w in zip(new_lut["gds"], new_lut["w"])]
-    new_lut["ron"] = [ron*(old_width/w) for ron,w  in zip(new_lut["ron"], new_lut["w"])]
-    #new_lut["self_gain"] = [gm/gds for gm, gds in zip(new_lut["gm"], new_lut["gds"])]
-    new_lut["cgs"] = [ocgs*(w/old_width) for ocgs, w in zip(new_lut["cgs"], new_lut["w"])]
-    new_lut["cgd"] = [ocgd*(w/old_width) for ocgd, w in zip(new_lut["cgd"], new_lut["w"])]
-    new_lut["csb"] = [ocsb*(w/old_width) for ocsb, w in zip(new_lut["csb"], new_lut["w"])]
-    new_lut["cdb"] = [ocdb*(w/old_width) for ocdb, w in zip(new_lut["cdb"], new_lut["w"])]
-    new_lut["cgg"] = [ocgg*(w/old_width) for ocgg, w in zip(new_lut["cgg"], new_lut["w"])]
-    new_lut["cdep"] = [ocdep*(w/old_width) for ocdep, w in zip(new_lut["cdep"], new_lut["w"])]
-    new_lut["cvar"] = [cv*(w/old_width) for cv,w in zip(new_lut["cvar", new_lut["w"]])]
+    # create cvar column
+    query = f"{columns[0]}=={control_row[columns[0]].values[0]} & {columns[2]}=={control_row[columns[2]].values[0]}"
+    # changed: added channel length - l - as a query control variable!
+    new_lut = new_lut[new_lut.eval(query)].copy()
     
+    new_lut["w"] = old_width*(cvar/control_row['cvar'].values[0])
+    new_lut["gds"] = new_lut["gds"]*(new_lut["w"]/old_width)
+    new_lut["rds"] = 1/new_lut["gds"]
+    #new_lut["self_gain"] = [gm/gds for gm, gds in zip(new_lut["gm"], new_lut["gds"])]
+    new_lut["cgs"] = new_lut["cgs"]*(new_lut["w"]/old_width)
+    new_lut["cgd"] = new_lut["cgd"]*(new_lut["w"]/old_width)
+    new_lut["csb"] = new_lut["csb"]*(new_lut["w"]/old_width)
+    new_lut["cdb"] = new_lut["cdb"]*(new_lut["w"]/old_width)
+    new_lut["cgg"] = new_lut["cgg"]*(new_lut["w"]/old_width)
+    new_lut["cvar"] = new_lut["cgg"] + new_lut["cgs"] + new_lut["cgd"]
     #new_lut["ft"] = [compute_ft(gm, cgs, cgd, csb, cdb) for gm, cgs, cgd, csb, cdb in zip(new_lut["gm"], new_lut["cgs"], new_lut["cgd"], new_lut["csb"], new_lut["cdb"])]
     # ft, gm/gds, gm/id and vearly all width independant parameters
-    
+    """
     # print the graphs of the new transistor parameters for the fixed vds and vsb
-    cap_cols = ["cvar", "cdep", "cgg", "cdb", "csb", "cgd", "cgs"]
+    cap_cols = ["cdb", "csb", "cgd", "cgs", "cgg"]
     cap_scale = {k:Scale.FEMTO.value[1] for k in cap_cols}
-    ycap = [np.array(list(new_lut[col]/scaling_factor)) for col,scaling_factor in cap_scale]
-    yy = [ycap] + [np.array(list(new_lut[col]/scaling_factor)) for col,scaling_factor in {"id": Scale.MICRO.value[1], "ron": 1, "gds" :Scale.MILI.values[1] }.items()]
-    labels = ["Parasitic Capacitances [fF]", "Id [uA]", "Ron [\u03A9]", "gds [mS]"]
-    file_names = ["caps", "id", "ron", "gds"]
+    ycap = [np.array(list(new_lut[col]/scaling_factor)) for col,scaling_factor in cap_scale.items()]
+    yy = [ycap] + [np.array(list(new_lut[col]/scaling_factor)) for col,scaling_factor in {"rds": 1 }.items()]
+    pcap_labels = ["Drain-Bulk Parasitic Capacitance [fF]", "Source-Bulk Parasitic Capacitance [fF]", "Gate-Drain Parasitic Capacitance [fF]", "Gate-Source Parasitic Capacitance [fF]", "Total Gate Capacitance [fF]"]
+    labels = [ pcap_labels, r"$R_{DS}$ [$\Omega$]", r"$g_{DS}$ [mS]"]
+    file_names = ["caps", "rds"]
     vgs_col = columns[-1]
     x = list(new_lut[vgs_col])
     xlabel = "Vgs [V]" if device.type == "nch" else "Vsg [V]"
     for y, label, fname in zip(yy, labels, file_names):
-        plot_function(x=x, y=y, labels=[label], xlabel=xlabel, ylabel=label, title=f"{label} vs. {xlabel}", show=False, filename=f"{device.name}-{fname}.png")
-    
-    output_vgs = control_row[vgs_col]
+        if type(label) != list:
+            plot_function(x=x, y=y, labels=[label], xlabel=xlabel, ylabel=label, title=f"{label} vs. {xlabel}", show=False, filename=f"{device.name}-{fname}.png")
+        else:
+            plot_function(x=new_lut[vgs_col].values, y=y, labels=label, xlabel=xlabel, ylabel="Capacitance [fF]", title=f"Parasitic Capacitance vs. {xlabel}", show=False, filename=f"{device.name}-{fname}.png")
+    """
+    output_vgs = control_row[vgs_col].values[0]
     query = f"{vgs_col}=={output_vgs}"
     output_row = new_lut[new_lut.eval(query)]
     
@@ -224,7 +224,7 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
             setattr(device, col, output_row[col].values[0])
     output_row = output_row[[col for col in [var for var in dir(device) if not var.startswith("__")] if col in output_row.columns]].set_index(vgs_col)
     if verbose:
-        log.info("Transistor sizing completed.")
+        log.info("Varactor sizing completed.")
         print(f"Varactor : {device.name}")
-        print(output_row)
+        print(output_row.transpose())
     return device, output_row

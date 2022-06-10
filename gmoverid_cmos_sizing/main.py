@@ -66,7 +66,7 @@ __cmd_args = {
         "-t": ("--type", "The device channel type [nch - nmos, pch - pmos]", "<pch or nch>", str, ""),
         "-vgs": ("--v-gate-source", "The voltage applied to the terminals of the N channel varactor", "<voltage>", str, "opt"),
         "-vsg": ("--v-source-gate", "The voltage applied to the terminals of the P channel varactor", "<voltage>", str, "opt"),
-        "-ron": ("--on-resistance", "The device\'s ON resistance", "<resistance>", str, "")
+        "-rds": ("--on-resistance", "The device\'s ON resistance", "<resistance>", str, "")
     }
 }
 

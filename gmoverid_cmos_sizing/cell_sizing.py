@@ -1,10 +1,11 @@
 from loguru import logger as log
-from utils import *
+from gmoverid_cmos_sizing.utils import *
 import json
 import pandas as pd
 from pandas import DataFrame
 import traceback
 import warnings
+from numpy.linalg import norm
 warnings.filterwarnings("ignore")
 from modelling_utils import(
     MosCell,
@@ -146,7 +147,7 @@ def devices_sizing(devices:Devices, plut:DataFrame, nlut:DataFrame, output_dir:s
             cell_sizing(device, nlut, output_dir, verbose = False)
     # for each device, compute the sizing
     if verbose:
-        print(devices)
+        print(devices.transpose())
     # output the sizing results to a yaml file
     devices.__data_frame__().to_json(os.path.join(output_dir, "devices.json"))
     devices.__data_frame__().to_json(os.path.join(output_dir, "devices.csv"))
@@ -170,48 +171,39 @@ def cell_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbose:bo
     vsb = np.abs(device.vsb) # source to bulk voltage in absolute value
     id = device.id # drain current
     # compute the closest transistor parameters of the lut in relation to the control parameters
-    def eucl_dist(pt2:list=[], pt1:list=[], weights = []) -> float:
+    def weighted_norm(row, pt1, cols=[], weights=[], p=1) -> float:
+        pt2 = [row[col] for col in cols]
         if len(pt2) != len(pt1):
             raise ValueError("The two points must have the same dimension")
         ws = np.array(weights) if len(weights) == len(pt1) else np.ones(len(pt1))
-        # using mahanolis distance computation for unitary correlation between the two variables pt1 and pt2
-        dif = np.multiply(np.array(pt2)-np.array(pt1), ws)
-        return np.dot(dif.T, dif)
+        vec = np.multiply(np.array(pt2)-np.array(pt1), ws)
+        return norm(vec, p)
+    
     columns = ["l", "gmoverid", "vds", "vsb"] if device.type == "nch" else ["l", "gmoverid", "vsd", "vbs"]
     control= {k:v for k,v in zip(columns, [l, gm_id, vds, vsb])}
-    
+    norm_weights = [1/lut[col].max() for col in control.keys()]
     # compute the closest vsd and vsb values to the parsed values
     # and limit the look up table to those values
-    vpoint = [vds, vsb]
-    vcols = [columns[-2], columns[-1]]
-    indexes = [ k for k, row in lut[vcols].iterrows() if eucl_dist(vpoint, list(row)) == np.min([eucl_dist(vpoint, list(row2)) for _, row2 in lut[vcols].iterrows()])]
-    rows = [lut.iloc[i] for i in indexes]
-    filtered_lut = DataFrame(rows)
-    
-    control_point = list(control.values())
-    row_index = [ k for k, row in filtered_lut[columns].iterrows() if eucl_dist(control_point, list(row)) == np.min([eucl_dist(control_point, list(row2)) for _, row2 in filtered_lut[columns].iterrows()])][0]
-    control_row = filtered_lut.loc[row_index]
-    old_width = control_row.get("w")
+    control_dists = lut.apply(weighted_norm, axis=1, args=( list(control.values()), ), cols=list(control.keys()), weights=norm_weights )
+    control_row = lut[ lut.apply(weighted_norm, axis=1, args=( list(control.values()), ), cols=list(control.keys()), weights=norm_weights ) == np.min(control_dists) ].copy()
+    old_width = control_row["w"].values[0]
     # for all the entries corresponding to the control vds and vsb given,
     # compute the new table entries
-    
-    query = f"{columns[-2]}=={control_row[columns[-2]]} & {columns[-1]}=={control_row[columns[-1]]}"
-    new_lut = lut[lut.eval(query)]
-    new_lut["w"] = old_width*(id/control_row['id'])
-    new_lut["gm"] = [ogm*(w/old_width) for ogm, w in zip( new_lut["gm"], new_lut["w"])]
-    new_lut["id"] = [gm/gmid for gm, gmid in zip(new_lut["gm"], new_lut["gmoverid"])]
-    new_lut["gds"] = [ogds*(w/old_width) for ogds, w in zip(new_lut["gds"], new_lut["w"])]
-    #new_lut["self_gain"] = [gm/gds for gm, gds in zip(new_lut["gm"], new_lut["gds"])]
-    new_lut["cgs"] = [ocgs*(w/old_width) for ocgs, w in zip(new_lut["cgs"], new_lut["w"])]
-    new_lut["cgd"] = [ocgd*(w/old_width) for ocgd, w in zip(new_lut["cgd"], new_lut["w"])]
-    new_lut["csb"] = [ocsb*(w/old_width) for ocsb, w in zip(new_lut["csb"], new_lut["w"])]
-    new_lut["cdb"] = [ocdb*(w/old_width) for ocdb, w in zip(new_lut["cdb"], new_lut["w"])]
-    #new_lut["ft"] = [compute_ft(gm, cgs, cgd, csb, cdb) for gm, cgs, cgd, csb, cdb in zip(new_lut["gm"], new_lut["cgs"], new_lut["cgd"], new_lut["csb"], new_lut["cdb"])]
-    # ft, gm/gds, gm/id and vearly all width independant parameters
+    query = f"{columns[-2]}=={control_row[columns[-2]].values[0]} & {columns[-1]}=={control_row[columns[-1]].values[0]} & {columns[0]}=={control_row[columns[0]].values[0]}"
+    # changed: added channel length - l - as a query control variable!
+    new_lut = lut[lut.eval(query)].copy()
+    new_lut["w"] = old_width*(id/control_row['id'].values[0])
+    new_lut["gm"] = new_lut["gm"]*(new_lut["w"]/old_width)
+    new_lut["id"] = new_lut["gm"]/new_lut["gmoverid"]
+    new_lut["gds"] = new_lut["gds"]*(new_lut["w"]/old_width)
+    new_lut["cgs"] = new_lut["cgs"]*(new_lut["w"]/old_width)
+    new_lut["cgd"] = new_lut["cgd"]*(new_lut["w"]/old_width)
+    new_lut["csb"] = new_lut["csb"]*(new_lut["w"]/old_width)
+    new_lut["cdb"] = new_lut["cdb"]*(new_lut["w"]/old_width)
     
     # print the graphs of the new transistor parameters for the fixed vds and vsb
     yy = [np.array(list(new_lut[col]/scaling_factor)) for col,scaling_factor in {"id": Scale.MILI.value[1], "gmoverid": 1, "self_gain" : 1, "ft" : Scale.GIGA.value[1]}.items()]
-    labels = ["Drive Current [mA]", "Gm/Id [V^-01]", "Self-Gain [SS^-01]", "Ft [GHz]"]
+    labels = ["Drive Current [mA]", r"Gm/Id [$V^{-1}$]", r"Self-Gain [$VV^{-1}$]", "Ft [GHz]"]
     file_names = ["drive_current", "gm_over_id", "self_gain", "ft"]
     vgs_col = "vgs" if device.type == "nch" else "pch"
     x = list(new_lut[vgs_col])
@@ -219,7 +211,7 @@ def cell_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbose:bo
     for y, label, fname in zip(yy, labels, file_names):
         plot_function(x=x, y=y, labels=[label], xlabel=xlabel, ylabel=label, title=f"{label} vs. {xlabel}", show=False, filename=f"{device.name}-{fname}.png")
     
-    output_vgs = control_row[vgs_col]
+    output_vgs = control_row[vgs_col].values[0]
     query = f"{vgs_col}=={output_vgs}"
     output_row = new_lut[new_lut.eval(query)]
     
@@ -231,5 +223,5 @@ def cell_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbose:bo
     if verbose:
         log.info("Transistor sizing completed.")
         print(f"Device : {device.name}")
-        print(output_row)
+        print(output_row.transpose())
     return device, output_row
