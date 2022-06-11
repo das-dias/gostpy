@@ -53,6 +53,7 @@ def varactor_sizing_console_parsing(subparser, *args, **kwargs):
     device = MosCell()
     device.__parse_data__("type", argv.type[0])
     device.__parse_data__("l", argv.length[0])
+    device.__parse_data__("cvar", argv.cap_varactor[0])
     if device.type == "nch":
         device.__parse_data__("vgs", argv.v_gate_source[0])
     else:
@@ -196,6 +197,7 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
     new_lut["cvar"] = new_lut["cgg"] + new_lut["cgs"] + new_lut["cgd"]
     #new_lut["ft"] = [compute_ft(gm, cgs, cgd, csb, cdb) for gm, cgs, cgd, csb, cdb in zip(new_lut["gm"], new_lut["cgs"], new_lut["cgd"], new_lut["csb"], new_lut["cdb"])]
     # ft, gm/gds, gm/id and vearly all width independant parameters
+    vgs_col = columns[-1]
     """
     # print the graphs of the new transistor parameters for the fixed vds and vsb
     cap_cols = ["cdb", "csb", "cgd", "cgs", "cgg"]
@@ -205,7 +207,6 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
     pcap_labels = ["Drain-Bulk Parasitic Capacitance [fF]", "Source-Bulk Parasitic Capacitance [fF]", "Gate-Drain Parasitic Capacitance [fF]", "Gate-Source Parasitic Capacitance [fF]", "Total Gate Capacitance [fF]"]
     labels = [ pcap_labels, r"$R_{DS}$ [$\Omega$]", r"$g_{DS}$ [mS]"]
     file_names = ["caps", "rds"]
-    vgs_col = columns[-1]
     x = list(new_lut[vgs_col])
     xlabel = "Vgs [V]" if device.type == "nch" else "Vsg [V]"
     for y, label, fname in zip(yy, labels, file_names):

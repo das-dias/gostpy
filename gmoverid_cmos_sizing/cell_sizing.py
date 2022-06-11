@@ -200,7 +200,8 @@ def cell_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbose:bo
     new_lut["cgd"] = new_lut["cgd"]*(new_lut["w"]/old_width)
     new_lut["csb"] = new_lut["csb"]*(new_lut["w"]/old_width)
     new_lut["cdb"] = new_lut["cdb"]*(new_lut["w"]/old_width)
-    
+    new_lut["self_gain"] = new_lut["gm"]/new_lut["gds"]
+    new_lut["ft"] = (1/(2*np.pi))*new_lut["gm"]/(new_lut["cgs"]+new_lut["cgd"])
     # print the graphs of the new transistor parameters for the fixed vds and vsb
     yy = [np.array(list(new_lut[col]/scaling_factor)) for col,scaling_factor in {"id": Scale.MILI.value[1], "gmoverid": 1, "self_gain" : 1, "ft" : Scale.GIGA.value[1]}.items()]
     labels = ["Drive Current [mA]", r"Gm/Id [$V^{-1}$]", r"Self-Gain [$VV^{-1}$]", "Ft [GHz]"]

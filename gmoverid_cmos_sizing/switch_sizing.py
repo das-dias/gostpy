@@ -54,6 +54,7 @@ def switch_sizing_console_parsing(subparser, *args, **kwargs):
     device = MosCell()
     device.__parse_data__("type", argv.type[0])
     device.__parse_data__("rds", argv.on_resistance[0])
+    device.__parse_data__("l", argv.length[0])
     if device.type == "nch":
         device.__parse_data__("vgs", argv.v_gate_source[0])
     else:

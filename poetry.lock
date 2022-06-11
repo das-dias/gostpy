@@ -110,7 +110,7 @@ setuptools_scm = ">=4"
 
 [[package]]
 name = "modelling-utils"
-version = "0.2.6"
+version = "0.2.11"
 description = " Utility functions and data structure for aiding in Analog Integrated Circuit Modelling using Python"
 category = "main"
 optional = false
@@ -131,7 +131,7 @@ toml = "^0.10.2"
 type = "git"
 url = "https://github.com/das-dias/modelling_utils.git"
 reference = "master"
-resolved_reference = "b69fbc54d5338f96263436222d3f53a9b4f53630"
+resolved_reference = "e9a801004c04a4900408a341dda179dd638ab6c4"
 
 [[package]]
 name = "more-itertools"

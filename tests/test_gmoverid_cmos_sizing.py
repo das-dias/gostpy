@@ -73,6 +73,7 @@ class TestGMoverIDSizing(unittest.TestCase):
         self.assertTrue(os.path.exists(luts_path))
         # import the luts into the program
         lut = read_data(luts_path)
+        print(lut)
         self.assertIsNotNone(lut)
         self.assertEqual(type(lut), DataFrame)
         varactor_sizing(device, lut, output_dir, verbose=True)
