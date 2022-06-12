@@ -1,0 +1,5 @@
+{
+    "__input_data_path__":"./src/data/input",
+    "__luts_path__":"./src/data/luts",
+    "__output_data_path__":"./src/data/output"
+}

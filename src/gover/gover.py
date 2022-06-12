@@ -4,11 +4,14 @@ import sys
 
 from pkg_resources import require
 from loguru import logger as log
-import subprocess
-from cell_sizing import gmoverid_cell_sizing_toml_parsing, gmoverid_cell_sizing_console_parsing
-from varactor_sizing import varactor_sizing_toml_parsing, varactor_sizing_console_parsing
-from switch_sizing import switch_sizing_toml_parsing, switch_sizing_console_parsing
-from utils import getParent
+
+from pyfiglet import Figlet
+
+from gover.cell_sizing import gmoverid_cell_sizing_toml_parsing, gmoverid_cell_sizing_console_parsing
+from gover.varactor_sizing import varactor_sizing_toml_parsing, varactor_sizing_console_parsing
+from gover.switch_sizing import switch_sizing_toml_parsing, switch_sizing_console_parsing
+from gover.utils import getParent
+
 from functools import wraps
 import traceback
 
@@ -85,7 +88,7 @@ def mapSubparserToFun(func, subparser):
         return func(subparser, *args, **kwargs)
     return wrapper
 
-def setup_parser(cmds, args):
+def setup_parser(cmds, args) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=f"Gm / Id Device Sizing Tool by {__author__} ({__email__})")
     # mutually exclusive arguments
     group = parser.add_mutually_exclusive_group()
@@ -129,29 +132,44 @@ def setup_parser(cmds, args):
                     help=arg_desc
                 )
     return parser
+
+def entry_msg() -> str:
+    msgs = [
+        Figlet(font="slant").renderText("GOVER"),
+        "Gm / Id Device Sizing Tool",
+        "by " + __author__ + " (" + __email__ + ")"
+    ]
+    max_ch = max([len(msg) for msg in msgs[1:]])+2
+    sep = "#"
+    ret = sep * (max_ch) + "\n"
+    ret += msgs[0]
+    for msg in msgs[1:]:
+        ret += " " + msg + " "*(max_ch-len(msg)) + "\n"
+    ret += sep * (max_ch) + "\n"
+    return ret
     
-def main():
+def cli(argv = None) -> None:
+    if argv is None:
+        print(entry_msg())
+        argv = list(sys.argv)
     # load lut data
     #load_luts(__file_dir__)
     # setup the parser and parse the arguments
     parser = setup_parser(__cmds, __cmd_args)
     subparsers = [tok for tok in __cmds.keys()] + [tok[0] for tok in __cmds.values()]
-    if len(sys.argv) <= 1: # append "help" if no arguments are given
-        sys.argv.append("-h")
-    elif sys.argv[1] in subparsers:
-        if len(sys.argv) == 2:
-            sys.argv.append("-h")   # append help when only 
+    if len(argv) <= 1: # append "help" if no arguments are given
+        argv.append("-h")
+    elif argv[1] in subparsers:
+        if len(argv) == 2:
+            argv.append("-h")   # append help when only 
                                     # one positional argument is given
     try:
-        args = parser.parse_args(sys.argv[1:])
+        args = parser.parse_args(argv[1:])
         try:
-            args.func(sys.argv[1:], data_dir=__file_dir__, io_json = __io_json__)
+            args.func(argv[1:], data_dir=__file_dir__, io_json = __io_json__)
         except Exception as e:
             log.error(traceback.format_exc())
     except argparse.ArgumentError as e: # catching unknown arguments
         log.warning(e)
     except Exception as e:
         log.error(traceback.format_exc())
-
-if __name__ == "__main__":
-    main()

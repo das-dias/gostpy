@@ -1,10 +1,10 @@
-from gmoverid_cmos_sizing import(
-    __version__,
-    load_luts,
-    cell_sizing,
-    switch_sizing,
-    varactor_sizing
-)
+from gover import __version__
+from gover.gover import cli
+from gover.utils import load_luts
+from gover.varactor_sizing import varactor_sizing
+from gover.cell_sizing import cell_sizing
+from gover.switch_sizing import switch_sizing
+
 import unittest
 from pandas import DataFrame
 import os
@@ -22,9 +22,9 @@ from modelling_utils import(
     stof,
 )
 
-luts_parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gmoverid_cmos_sizing/gmoverid_cmos_sizing/data/luts"
-parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gmoverid_cmos_sizing/gmoverid_cmos_sizing"
-output_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gmoverid_cmos_sizing/gmoverid_cmos_sizing/data/output"
+luts_parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/src/data/luts"
+parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/src/"
+output_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/src/data/output"
 class TestGMoverIDSizing(unittest.TestCase):
     def test_version(self):
         self.assertEqual(__version__, "0.1.0")
@@ -99,8 +99,6 @@ class TestGMoverIDSizing(unittest.TestCase):
         switch_sizing(device, lut, output_dir, verbose=True)
         
         
-        
-
 if __name__ == "__main__":
     # load the tables from the input file to the lut_file
     load_luts(parent_dir)

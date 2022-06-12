@@ -11,7 +11,7 @@ __type__ = "script"
 __author__ = "Diogo André"
 __description__ = "Loads the data from the csv files and saves it in the lut files"
 
-__io = "./gmoverid_cmos_sizing/io.json"
+__io = "./gover/io.json"
 
 __pcell_lut = pd.DataFrame() # p channel mos transistor lookup table
 __ncell_lut = pd.DataFrame() # n channel mos transistor lookup table
