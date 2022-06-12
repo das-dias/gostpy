@@ -3,6 +3,7 @@ from modelling_utils import(
 )
 import os
 import pandas as pd
+from utils import getParent
 import json
 from loguru import logger
 import traceback
@@ -10,8 +11,8 @@ import traceback
 __type__ = "script"
 __author__ = "Diogo André"
 __description__ = "Loads the data from the csv files and saves it in the lut files"
-
-__io = "./gover/io.json"
+__parent_dir = os.path.realpath(getParent(__file__))
+__io = os.path.join(__parent_dir,"io.json")
 
 __pcell_lut = pd.DataFrame() # p channel mos transistor lookup table
 __ncell_lut = pd.DataFrame() # n channel mos transistor lookup table

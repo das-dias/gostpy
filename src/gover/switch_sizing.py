@@ -49,7 +49,7 @@ def switch_sizing_console_parsing(subparser, *args, **kwargs):
     device = MosCell()
     device.__parse_data__("type", argv.type[0])
     device.__parse_data__("rds", argv.on_resistance[0])
-    device.__parse_data__("l", argv.length[0])
+    device.__parse_data__("l", "30 n") # parse minimum length
     if device.type == "nch":
         device.__parse_data__("vgs", argv.v_gate_source[0])
     else:
@@ -125,7 +125,6 @@ def switches_sizing(devices:Devices, plut:DataFrame, nlut:DataFrame, output_dir:
         verbose (bool): Verbose or not the output
     """
     # load devices from specification file
-    out_row = None
     for dev_name, device in devices.switches.items():
         if device.type == "pch":
             switch_sizing(device, plut, output_dir, verbose = False)
@@ -135,10 +134,10 @@ def switches_sizing(devices:Devices, plut:DataFrame, nlut:DataFrame, output_dir:
     if verbose:
         print(devices)
     # output the sizing results to a yaml file
-    devices.__data_frame__().to_json(os.path.join(output_dir, "varactors.json"))
-    devices.__data_frame__().to_json(os.path.join(output_dir, "varactors.csv"))
-    devices.__data_frame__().to_markdown(os.path.join(output_dir, "varactors.md"))
-    devices.__data_frame__().to_latex(os.path.join(output_dir, "varactors.tex"))
+    devices.__data_frame__().to_json(os.path.join(output_dir, "switches.json"))
+    devices.__data_frame__().to_json(os.path.join(output_dir, "switches.csv"))
+    devices.__data_frame__().to_markdown(os.path.join(output_dir, "switches.md"))
+    devices.__data_frame__().to_latex(os.path.join(output_dir, "switches.tex"))
 
 @timer
 def switch_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbose:bool = False):

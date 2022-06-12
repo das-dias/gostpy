@@ -12,18 +12,11 @@ import os
 from modelling_utils import(
     MosCell,
     Devices,
-    Scale,
-    TomlControlType,
-    timer,
-    read_specs,
     read_data,
-    plot_function,
-    plot_hist,
-    stof,
 )
 
 luts_parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/src/data/luts"
-parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/src/"
+parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/src/gover"
 output_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/src/data/output"
 class TestGMoverIDSizing(unittest.TestCase):
     def test_version(self):
@@ -97,7 +90,73 @@ class TestGMoverIDSizing(unittest.TestCase):
         self.assertIsNotNone(lut)
         self.assertEqual(type(lut), DataFrame)
         switch_sizing(device, lut, output_dir, verbose=True)
-        
+    
+    def test_cli(self):
+        with self.assertRaises(SystemExit):
+            cli()
+    
+    def test_inserting_help_subparser_cli(self):
+        argv = ["single-cell-sizing"]
+        with self.assertRaises(SystemExit):
+            cli(argv)
+    
+    def test_single_cell_sizing_cli(self):
+        argv = [
+            "single-cell-sizing",
+            "-t", "nch",
+            "-vds","200 m", 
+            "-vsb","0.0",
+            "-l", "60 n",
+            "-gi", "20.0",
+            "-id", "500 u"
+        ]
+        with self.assertRaises(SystemExit):
+            cli(argv)
+    
+    def test_single_switch_sizing_cli(self):
+        argv = [
+            "single-switch-sizing",
+            "-t", "nch",
+            "-vgs","200 m",
+            "-rds", "100.00"
+        ]
+        with self.assertRaises(SystemExit):
+            cli(argv)
+            
+    def test_single_varactor_sizing_cli(self):
+        argv = [
+            "single-varactor-sizing",
+            "-t", "pch",
+            "-vsg","400 m",
+            "-l", "60 n",
+            "-cvar", "200 f"
+        ]
+        with self.assertRaises(SystemExit):
+            cli(argv)
+    
+    def test_cell_sizing_cli(self):
+        argv = [
+            "cell-sizing",
+            "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/resources/specs.toml",
+        ]
+        with self.assertRaises(SystemExit):
+            cli(argv)
+    
+    def test_varactor_sizing_cli(self):
+        argv = [
+            "varactor-sizing",
+            "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/resources/vspecs.toml",
+        ]
+        with self.assertRaises(SystemExit):
+            cli(argv)
+    
+    def test_switch_sizing_cli(self):
+        argv = [
+            "switch-sizing",
+            "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/resources/sspecs.toml",
+        ]
+        with self.assertRaises(SystemExit):
+            cli(argv)
         
 if __name__ == "__main__":
     # load the tables from the input file to the lut_file

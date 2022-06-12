@@ -16,6 +16,7 @@ from functools import wraps
 import traceback
 
 __file_dir__ = os.path.realpath(getParent(__file__))
+#__file_dir__ = os.path.realpath(__file__)
 __io_json__ = os.path.join(__file_dir__, "io.json")
 __author__ = "Diogo André Silvares Dias"
 __email__ = "das.dias6@gmail.com"
@@ -149,27 +150,29 @@ def entry_msg() -> str:
     return ret
     
 def cli(argv = None) -> None:
+    print(entry_msg())
     if argv is None:
-        print(entry_msg())
-        argv = list(sys.argv)
+        argv = sys.argv[1:]
+    print("ArgV:", "\n".join(arg for arg in argv))
     # load lut data
     #load_luts(__file_dir__)
     # setup the parser and parse the arguments
     parser = setup_parser(__cmds, __cmd_args)
     subparsers = [tok for tok in __cmds.keys()] + [tok[0] for tok in __cmds.values()]
-    if len(argv) <= 1: # append "help" if no arguments are given
+    if len(argv) == 0: # append "help" if no arguments are given
         argv.append("-h")
-    elif argv[1] in subparsers:
-        if len(argv) == 2:
+    elif argv[0] in subparsers:
+        if len(argv) == 1:
             argv.append("-h")   # append help when only 
                                     # one positional argument is given
     try:
-        args = parser.parse_args(argv[1:])
+        args = parser.parse_args(argv)
         try:
-            args.func(argv[1:], data_dir=__file_dir__, io_json = __io_json__)
+            args.func(argv, data_dir=__file_dir__, io_json = __io_json__)
         except Exception as e:
             log.error(traceback.format_exc())
     except argparse.ArgumentError as e: # catching unknown arguments
         log.warning(e)
     except Exception as e:
         log.error(traceback.format_exc())
+    sys.exit(1) # traceback successful command run

@@ -146,7 +146,7 @@ def devices_sizing(devices:Devices, plut:DataFrame, nlut:DataFrame, output_dir:s
             cell_sizing(device, nlut, output_dir, verbose = False)
     # for each device, compute the sizing
     if verbose:
-        print(devices.transpose())
+        print(devices)
     # output the sizing results to a yaml file
     devices.__data_frame__().to_json(os.path.join(output_dir, "devices.json"))
     devices.__data_frame__().to_json(os.path.join(output_dir, "devices.csv"))
@@ -205,7 +205,7 @@ def cell_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbose:bo
     yy = [np.array(list(new_lut[col]/scaling_factor)) for col,scaling_factor in {"id": Scale.MILI.value[1], "gmoverid": 1, "self_gain" : 1, "ft" : Scale.GIGA.value[1]}.items()]
     labels = ["Drive Current [mA]", r"Gm/Id [$V^{-1}$]", r"Self-Gain [$VV^{-1}$]", "Ft [GHz]"]
     file_names = ["drive_current", "gm_over_id", "self_gain", "ft"]
-    vgs_col = "vgs" if device.type == "nch" else "pch"
+    vgs_col = "vgs" if device.type == "nch" else "vsg"
     x = list(new_lut[vgs_col])
     xlabel = "Vgs [V]" if device.type == "nch" else "Vsg [V]"
     for y, label, fname in zip(yy, labels, file_names):

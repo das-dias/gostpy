@@ -164,8 +164,8 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
         return norm(vec, p)
     new_lut = lut.copy()
     new_lut["cvar"] = new_lut["cgg"]+new_lut["cgs"]+new_lut["cgd"]
-    columns = ["l", "cvar", "vgs"] if device.type == "nch" else ["l", "cvar", "vsg"]
-    control= {k:v for k,v in zip(columns, [l, cvar, vgs])}
+    columns = ["l","vgs"] if device.type == "nch" else ["l", "vsg" ]
+    control= {k:v for k,v in zip(columns, [l, vgs])}
     norm_weights = [1/new_lut[col].max() for col in control.keys()]
     # compute the closest vsd and vsb values to the parsed values
     # and limit the look up table to those values
@@ -176,7 +176,7 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
     # compute the new table entries
     
     # create cvar column
-    query = f"{columns[0]}=={control_row[columns[0]].values[0]} & {columns[2]}=={control_row[columns[2]].values[0]}"
+    query = f"{columns[0]}=={control_row[columns[0]].values[0]} & {columns[1]}=={control_row[columns[1]].values[0]}"
     # changed: added channel length - l - as a query control variable!
     new_lut = new_lut[new_lut.eval(query)].copy()
     
