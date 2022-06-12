@@ -134,10 +134,10 @@ def switches_sizing(devices:Devices, plut:DataFrame, nlut:DataFrame, output_dir:
     if verbose:
         print(devices)
     # output the sizing results to a yaml file
-    devices.__data_frame__().to_json(os.path.join(output_dir, "switches.json"))
-    devices.__data_frame__().to_json(os.path.join(output_dir, "switches.csv"))
-    devices.__data_frame__().to_markdown(os.path.join(output_dir, "switches.md"))
-    devices.__data_frame__().to_latex(os.path.join(output_dir, "switches.tex"))
+    devices.__data_frame__(dev_type = "switch").to_json(os.path.join(output_dir, "switches.json"))
+    devices.__data_frame__(dev_type = "switch").to_json(os.path.join(output_dir, "switches.csv"))
+    devices.__data_frame__(dev_type = "switch").to_markdown(os.path.join(output_dir, "switches.md"))
+    devices.__data_frame__(dev_type = "switch").to_latex(os.path.join(output_dir, "switches.tex"))
 
 @timer
 def switch_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbose:bool = False):

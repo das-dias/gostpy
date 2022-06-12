@@ -134,10 +134,10 @@ def varactors_sizing(devices:Devices, plut:DataFrame, nlut:DataFrame, output_dir
     if verbose:
         print(devices)
     # output the sizing results to a yaml file
-    devices.__data_frame__().to_json(os.path.join(output_dir, "varactors.json"))
-    devices.__data_frame__().to_json(os.path.join(output_dir, "varactors.csv"))
-    devices.__data_frame__().to_markdown(os.path.join(output_dir, "varactors.md"))
-    devices.__data_frame__().to_latex(os.path.join(output_dir, "varactors.tex"))
+    devices.__data_frame__(dev_type = "varactor").to_json(os.path.join(output_dir, "varactors.json"))
+    devices.__data_frame__(dev_type = "varactor").to_json(os.path.join(output_dir, "varactors.csv"))
+    devices.__data_frame__(dev_type = "varactor").to_markdown(os.path.join(output_dir, "varactors.md"))
+    devices.__data_frame__(dev_type = "varactor").to_latex(os.path.join(output_dir, "varactors.tex"))
 
 @timer
 def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbose:bool = False):
