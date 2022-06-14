@@ -49,7 +49,7 @@ def switch_sizing_console_parsing(subparser, *args, **kwargs):
     device = MosCell()
     device.__parse_data__("type", argv.type[0])
     device.__parse_data__("rds", argv.on_resistance[0])
-    device.__parse_data__("l", "30 n") # parse minimum length
+    device.__parse_data__("l", argv.length[0]) # parse minimum length
     if device.type == "nch":
         device.__parse_data__("vgs", argv.v_gate_source[0])
     else:
@@ -59,7 +59,7 @@ def switch_sizing_console_parsing(subparser, *args, **kwargs):
     with open(io_json, "r") as f:
         io = json.load(f)
     luts_path = io.get("__luts_path__")
-    output_data_path = io.get("__output_data_path__")
+    output_data_path = argv.output_dir[0] if bool(argv.output_dir) else io.get("__output_data_path__")
     lut_name = "pswitch.csv" if device.type == "pch" else "nswitch.csv"
     
     # load lut data
@@ -101,7 +101,7 @@ def switch_sizing_toml_parsing(subparser, *args, **kwargs):
     with open(io_json, "r") as f:
         io = json.load(f)
     luts_path = io.get("__luts_path__")
-    output_data_path = io.get("__output_data_path__")
+    output_data_path = argv.output_dir[0] if bool(argv.output_dir) else io.get("__output_data_path__")
     # from the arguments, extract the necessary info to proceed with the computation
     plut_name = "pswitch.csv" 
     nlut_name = "nswitch.csv"

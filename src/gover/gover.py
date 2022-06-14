@@ -37,17 +37,14 @@ __cmd_args = {
     "-cs": {
         "-s": ("--specs-file", "The path to the specifications file", "<file path>", str, "opt"), 
         "-o": ("--output-dir", "The path to the output folder", "<directory path>", str, "opt"),
-        "-p": ("--print-curves", "Print the curves regarding the found DC Operating Point", "<>", bool, "opt")
     },
     "-vs": {
         "-s": ("--specs-file", "The path to the specifications file", "<file path>", str, "opt"), 
         "-o": ("--output-dir", "The path to the output folder", "<directory path>", str, "opt"),
-        "-p": ("--print-curves", "Print the curves regarding the found DC Operating Point", "<>", bool, "opt")
     },
     "-ss": {
         "-s": ("--specs-file", "The path to the specifications file", "<file path>", str, "opt"), 
         "-o": ("--output-dir", "The path to the output folder", "<directory path>", str, "opt"),
-        "-p": ("--print-curves", "Print the curves regarding the found DC Operating Point", "<>", bool, "opt")
     },
     "-scs": {
         "-t": ("--type", "The device channel type [nch - nmos, pch - pmos]", "<pch or nch>", str, ""), 
@@ -57,20 +54,24 @@ __cmd_args = {
         "-vbs": ("--v-bulk-source", "The bulk to source voltage", "<voltage>", str, "opt"),
         "-l": ("--length", "The length of the transistor's channel", "<length>", str, ""),
         "-gi": ("--gm-over-id", "The device\'s transconductance efficiency", "<gm/id value>", str, ""),
-        "-id": ("--drive-current", "The driving current of the transistor", "<current>", str, "")
+        "-id": ("--drive-current", "The driving current of the transistor", "<current>", str, ""),
+        "-o": ("--output-dir", "The path to the output folder", "<directory path>", str, "opt")
     },
     "-svs": {
         "-t": ("--type", "The device channel type [nch - nmos, pch - pmos]", "<pch or nch>", str, ""),
         "-vgs": ("--v-gate-source", "The voltage applied to the terminals of the N channel varactor", "<voltage>", str, "opt"),
         "-vsg": ("--v-source-gate", "The voltage applied to the terminals of the P channel varactor", "<voltage>", str, "opt"),
         "-l": ("--length", "The length of the transistor's channel", "<length>", str, ""),
-        "-cvar": ("--cap-varactor", "The device\'s total gate to bulk capacitance", "<capacitance>", str, "")
+        "-cvar": ("--cap-varactor", "The device\'s total gate to bulk capacitance", "<capacitance>", str, ""),
+        "-o": ("--output-dir", "The path to the output folder", "<directory path>", str, "opt")
     },
     "-sss": {
         "-t": ("--type", "The device channel type [nch - nmos, pch - pmos]", "<pch or nch>", str, ""),
         "-vgs": ("--v-gate-source", "The voltage applied to the terminals of the N channel varactor", "<voltage>", str, "opt"),
         "-vsg": ("--v-source-gate", "The voltage applied to the terminals of the P channel varactor", "<voltage>", str, "opt"),
-        "-rds": ("--on-resistance", "The device\'s ON resistance", "<resistance>", str, "")
+        "-rds": ("--on-resistance", "The device\'s ON resistance", "<resistance>", str, ""),
+        "-l": ("--length", "The length of the transistor's channel", "<length>", str, ""),
+        "-o": ("--output-dir", "The path to the output folder", "<directory path>", str, "opt")
     }
 }
 
@@ -153,7 +154,6 @@ def cli(argv = None) -> None:
     print(entry_msg())
     if argv is None:
         argv = sys.argv[1:]
-    print("ArgV:", "\n".join(arg for arg in argv))
     # load lut data
     #load_luts(__file_dir__)
     # setup the parser and parse the arguments

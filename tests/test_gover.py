@@ -118,7 +118,8 @@ class TestGMoverIDSizing(unittest.TestCase):
             "single-switch-sizing",
             "-t", "nch",
             "-vgs","200 m",
-            "-rds", "100.00"
+            "-rds", "100.00",
+            "-l", "30 n"
         ]
         with self.assertRaises(SystemExit):
             cli(argv)

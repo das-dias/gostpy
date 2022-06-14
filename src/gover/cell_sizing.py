@@ -72,7 +72,7 @@ def gmoverid_cell_sizing_console_parsing(subparser, *args, **kwargs):
     with open(io_json, "r") as f:
         io = json.load(f)
     luts_path = io.get("__luts_path__")
-    output_data_path = io.get("__output_data_path__")
+    output_data_path = argv.output_dir[0] if bool(argv.output_dir) else io.get("__output_data_path__")
     lut_name = "pcell.csv" if device.type == "pch" else "ncell.csv"
     
     # load lut data
@@ -114,7 +114,7 @@ def gmoverid_cell_sizing_toml_parsing(subparser, *args, **kwargs):
     with open(io_json, "r") as f:
         io = json.load(f)
     luts_path = io.get("__luts_path__")
-    output_data_path = io.get("__output_data_path__")
+    output_data_path = argv.output_dir[0] if bool(argv.output_dir) else io.get("__output_data_path__")
     # from the arguments, extract the necessary info to proceed with the computation
     plut_name = "pcell.csv" 
     nlut_name = "ncell.csv"
