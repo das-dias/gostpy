@@ -24,6 +24,14 @@ After providing the necessary simulation data to the input directory, the tool w
 - ```Poetry``` - Python language’s most famous and best package manager, allowing to quickly deploy any application or package written in Python ([https://python-poetry.org/docs/](https://python-poetry.org/docs/))
 - SPICE simulation-generated look up tables with each device type’s direct-current (DC) operating point (OP). The data available in ```src/data/input``` was generated using ```Cadence-Virtuoso``` software, and relates to a 28 nm TSMC CMOS technology.
 
+## Installing
+After installing ```Poetry``` run the following command inside the code folder:
+```
+foo/bar/goverpy % poetry install
+```
+In this case it was considered that the application directory, ```/goverpy``` was placed inside the directory ```foo/bar/```.
+
+
 ## Methodology
 
 The sizing of each type of N-channel (nch) or P-channel (pch) CMOS device is bound by its specific set of degrees of freedom (DOF):
