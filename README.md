@@ -55,8 +55,33 @@ The sizing of each type of N-channel (nch) or P-channel (pch) CMOS device is bou
 
 All the aforementioned DOF will enable the generation of a ```Channel Width (Wch)``` that allows for each device to accomplish its design specification (Gm/Id for transistors, Ron for switches and Cvar for MOSCaps). The operation of the tool can then be summarised in the following system diagrams:
 
-#Insert diagrams here
+```mermaid
+flowchart LR
+I1[L<sub>CH</sub>] --> MT(Transistor \n Sizing Engine)
+I2[V<sub>DS</sub>] --> MT
+I3[V<sub>SB</sub>] --> MT
+I4[I<sub>D</sub>] --> MT
+I5[Gm / I<sub>D</sub><sup>] --> MT
+MT --> O(W<sub>CH</sub>)
+```
+Diagram 1 - CMOS Transistor sizing method using Gm/Id methodology.
 
+```mermaid
+flowchart LR
+I1[L<sub>CH</sub>] --> MT(Switch \n Sizing Engine)
+I2[V<sub>GS</sub>] --> MT
+I3[R<sub>ON</sub> = R<sub>DS</sub>] --> MT
+MT --> O(W<sub>CH</sub>)
+```
+Diagram 2 - CMOS Switch sizing method using Gm/Id methodology.
+```mermaid
+flowchart LR
+I1[L<sub>CH</sub>] --> MT(MOSCap \n Sizing Engine)
+I2[V<sub>GS</sub>] --> MT
+I3[C<sub>VAR</sub>] --> MT
+MT --> O(W<sub>CH</sub>)
+```
+Diagram 3 - MOSCap sizing method using Gm/Id methodology.
 ## How to Use
 
 ```Gover``` is an application based on a command-line interface (CLI) that allows the user to interact with the application itself, and therefore the use of the app is based on the parsing of commands and its associated parameters in order to generate an output based on the given input of the user. Some examples are given on how to interact with the tool.
