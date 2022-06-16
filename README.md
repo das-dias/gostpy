@@ -27,9 +27,9 @@ After providing the necessary simulation data to the input directory, the tool w
 ## Installing
 After installing ```Poetry``` run the following command inside the code folder:
 ```
-foo/bar/goverpy % poetry install
+foo/bar/gostpy % poetry install
 ```
-In this case it was considered that the application directory, ```/goverpy``` was placed inside the directory ```foo/bar/```.
+In this case it was considered that the application directory, ```/gostpy``` was placed inside the directory ```foo/bar/```.
 
 
 ## Methodology
@@ -95,17 +95,17 @@ Diagram 3 - MOSCap sizing method using Gm/Id methodology.
 In order to observe the sub-processes that are embedded into the tool, one can call for help in its main-frame:
 
 ```
-poetry run gover -h
+poetry run gost -h
 ```
 OR
 ```
-poetry run gover —help
+poetry run gost —help
 ```
 
 An output like this will appear:
 
 ```
-usage: gover [-h] [-q | -v] {cell-sizing,varactor-sizing,switch-sizing,single-cell-sizing,single-varactor-sizing,single-switch-sizing} ...
+usage: gost [-h] [-q | -v] {cell-sizing,varactor-sizing,switch-sizing,single-cell-sizing,single-varactor-sizing,single-switch-sizing} ...
 
 Gm / Id Device Sizing Tool by Diogo André Silvares Dias (das.dias6@gmail.com)
 
@@ -139,13 +139,13 @@ optional arguments:
 Each sub-frame has its own ```help``` console output, and one can call it by simply typing into console the call of the ```GOST``` application, followed by the sub-frame we want to call (depending on the kind of device we want to size) and the help command. For example, if we want some help on sizing multiple CMOS switches using a ```.TOML``` file for the input of switch specifications we can run the following command:
 
 ```
-poetry run gover switch-sizing -h
+poetry run gost switch-sizing -h
 ```
 
 OR
 
 ```
-poetry run gover switch-sizing —help
+poetry run gost switch-sizing —help
 ```
 
 As stated before, the supports the sizing of multiple devices (of the same type) at once through the use of a ```.TOML``` file to parse specifications for each device to design into the application, and also supports the sizing of a single device of any type by parsing the device’s specifications directly from console into the tool.
@@ -157,7 +157,7 @@ As stated before, the supports the sizing of multiple devices (of the same type)
 An example regarding the sizing operation of a single transistor using console parsing is given in the following snippet.
 
 ```
-poetry run gover single-cell-sizing -t nch -vds “200 m” -vsb 0.0 -l “60 n” -gi 20 -id “500 u”
+poetry run gost single-cell-sizing -t nch -vds “200 m” -vsb 0.0 -l “60 n” -gi 20 -id “500 u”
 ```
 
 In this snippet, an NMOS (```-t nch```) transistor device is being sized, in which its:
@@ -173,8 +173,8 @@ The obtained console output for these sizing parameters is currently computed th
 The console output for the previous command will be as such:
 
 ```
-2022-06-13 14:03:53.510 | **INFO**     | gover.cell_sizing:cell_sizing:165 - **Computing m0 transistor sizing...**
-2022-06-13 14:03:54.021 | **INFO**     | gover.cell_sizing:cell_sizing:224 - **Transistor sizing completed.**
+2022-06-13 14:03:53.510 | **INFO**     | gost.cell_sizing:cell_sizing:165 - **Computing m0 transistor sizing...**
+2022-06-13 14:03:54.021 | **INFO**     | gost.cell_sizing:cell_sizing:224 - **Transistor sizing completed.**
 Device : m0
 vgs                 0.4
 cdb        2.180952e-14
@@ -229,7 +229,7 @@ vars={s0=["all"], s1=["vgs","cgs"], s2=["ft"], s3=["all"]}
 By running the following command:
 
 ```
-poetry run gover switch-sizing -s foo/bar/switch_specs.toml
+poetry run gost switch-sizing -s foo/bar/switch_specs.toml
 ```
 
 The switches ```s0``` to ```s3``` will be automatically sized, and the following output will be generated to console (along with the generated graphs):
