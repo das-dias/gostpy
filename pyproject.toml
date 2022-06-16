@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "gover"
-version = "0.1.0"
-description = ""
+name = "gost"
+version = "0.1.1"
+description = "GOST (Gm Over id Sizing Tool) is a tool dedicated to aiding Analog Design engineers in the process of sizing CMOS devices."
 authors = ["dasdias <das.dias6@gmail.com>"]
 license = "MIT"
 
@@ -12,8 +12,8 @@ pandas = "^1.4.2"
 argparse = "^1.4.0"
 loguru = "^0.6.0"
 tabulate = "^0.8.9"
-modelling-utils={git="https://github.com/das-dias/modelling_utils.git"}
 pyfiglet = "^0.8.post1"
+modelling-utils = "^0.2.11"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -24,4 +24,4 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-gover = "gover.gover:cli"
+gost = "gost.gost:cli"

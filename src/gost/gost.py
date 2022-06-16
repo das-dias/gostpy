@@ -7,10 +7,10 @@ from loguru import logger as log
 
 from pyfiglet import Figlet
 
-from gover.cell_sizing import gmoverid_cell_sizing_toml_parsing, gmoverid_cell_sizing_console_parsing
-from gover.varactor_sizing import varactor_sizing_toml_parsing, varactor_sizing_console_parsing
-from gover.switch_sizing import switch_sizing_toml_parsing, switch_sizing_console_parsing
-from gover.utils import getParent
+from gost.cell_sizing import gmoverid_cell_sizing_toml_parsing, gmoverid_cell_sizing_console_parsing
+from gost.varactor_sizing import varactor_sizing_toml_parsing, varactor_sizing_console_parsing
+from gost.switch_sizing import switch_sizing_toml_parsing, switch_sizing_console_parsing
+from gost.utils import getParent
 
 from functools import wraps
 import traceback
@@ -137,7 +137,7 @@ def setup_parser(cmds, args) -> argparse.ArgumentParser:
 
 def entry_msg() -> str:
     msgs = [
-        Figlet(font="slant").renderText("GOVER"),
+        Figlet(font="slant").renderText("GOST"),
         "Gm / Id Device Sizing Tool",
         "by " + __author__ + " (" + __email__ + ")"
     ]

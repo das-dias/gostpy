@@ -1,6 +1,6 @@
 from re import I
 from loguru import logger as log
-from gover.utils import *
+from gost.utils import *
 import json
 import pandas as pd
 from pandas import DataFrame

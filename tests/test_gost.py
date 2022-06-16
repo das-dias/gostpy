@@ -1,9 +1,9 @@
-from gover import __version__
-from gover.gover import cli
-from gover.utils import load_luts
-from gover.varactor_sizing import varactor_sizing
-from gover.cell_sizing import cell_sizing
-from gover.switch_sizing import switch_sizing
+from gost import __version__
+from gost.gost import cli
+from gost.utils import load_luts
+from gost.varactor_sizing import varactor_sizing
+from gost.cell_sizing import cell_sizing
+from gost.switch_sizing import switch_sizing
 
 import unittest
 from pandas import DataFrame
@@ -15,12 +15,12 @@ from modelling_utils import(
     read_data,
 )
 
-luts_parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/src/data/luts"
-parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/src/gover"
-output_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/src/data/output"
+luts_parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/src/data/luts"
+parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/src/gost"
+output_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/src/data/output"
 class TestGMoverIDSizing(unittest.TestCase):
     def test_version(self):
-        self.assertEqual(__version__, "0.1.0")
+        self.assertEqual(__version__, "0.1.1")
     
     def test_single_cell_sizing(self):
         # create and setup an nmos device
@@ -138,7 +138,7 @@ class TestGMoverIDSizing(unittest.TestCase):
     def test_cell_sizing_cli(self):
         argv = [
             "cell-sizing",
-            "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/resources/specs.toml",
+            "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/resources/specs.toml",
         ]
         with self.assertRaises(SystemExit):
             cli(argv)
@@ -146,7 +146,7 @@ class TestGMoverIDSizing(unittest.TestCase):
     def test_varactor_sizing_cli(self):
         argv = [
             "varactor-sizing",
-            "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/resources/vspecs.toml",
+            "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/resources/vspecs.toml",
         ]
         with self.assertRaises(SystemExit):
             cli(argv)
@@ -154,7 +154,7 @@ class TestGMoverIDSizing(unittest.TestCase):
     def test_switch_sizing_cli(self):
         argv = [
             "switch-sizing",
-            "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/goverpy/resources/sspecs.toml",
+            "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/resources/sspecs.toml",
         ]
         with self.assertRaises(SystemExit):
             cli(argv)

@@ -1,7 +1,7 @@
 ![algarvia_1.png](docs/algarvia_1.png)
-# Gover
+# GOST - Gm Over id Sizing Tool
 
-```Gover``` is a tool dedicated to aiding analog integrated circuit designers sizing the devices integrating the circuits being designed through the use of the Gm (transconductance) over Id (Drain-Source) (Gm/Id) design methodology.
+```GOST``` is a tool dedicated to aiding analog integrated circuit designers sizing the devices integrating the circuits being designed through the use of the Gm (transconductance) over Id (Drain-Source) (Gm/Id) design methodology.
 
 ## Summary
 
@@ -84,7 +84,7 @@ MT --> O(W<sub>CH</sub>)
 Diagram 3 - MOSCap sizing method using Gm/Id methodology.
 ## How to Use
 
-```Gover``` is an application based on a command-line interface (CLI) that allows the user to interact with the application itself, and therefore the use of the app is based on the parsing of commands and its associated parameters in order to generate an output based on the given input of the user. Some examples are given on how to interact with the tool.
+```GOST``` is an application based on a command-line interface (CLI) that allows the user to interact with the application itself, and therefore the use of the app is based on the parsing of commands and its associated parameters in order to generate an output based on the given input of the user. Some examples are given on how to interact with the tool.
 
 ---
 
@@ -136,7 +136,7 @@ optional arguments:
 ---
 *Device Sizing Secondary-Frames:*
 
-Each sub-frame has its own ```help``` console output, and one can call it by simply typing into console the call of the ```Gover``` application, followed by the sub-frame we want to call (depending on the kind of device we want to size) and the help command. For example, if we want some help on sizing multiple CMOS switches using a ```.TOML``` file for the input of switch specifications we can run the following command:
+Each sub-frame has its own ```help``` console output, and one can call it by simply typing into console the call of the ```GOST``` application, followed by the sub-frame we want to call (depending on the kind of device we want to size) and the help command. For example, if we want some help on sizing multiple CMOS switches using a ```.TOML``` file for the input of switch specifications we can run the following command:
 
 ```
 poetry run gover switch-sizing -h
