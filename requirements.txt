@@ -1,0 +1,6 @@
+loguru==0.6.0
+modelling_utils==0.2.11
+numpy==1.22.3
+pandas==1.4.2
+pyfiglet==0.8.post1
+setuptools==58.0.4

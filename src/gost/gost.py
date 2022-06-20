@@ -21,8 +21,7 @@ __io_json__ = os.path.join(__file_dir__, "io.json")
 __author__ = "Diogo André Silvares Dias"
 __email__ = "das.dias6@gmail.com"
 
-
-
+# define the subparsers
 __cmds = {
     #"-ll": ("-load-lut", "Load the LUT data from the csv files", load_luts),
     "-cs": ("cell-sizing", "Compute the transistor sizing", gmoverid_cell_sizing_toml_parsing),
@@ -33,6 +32,7 @@ __cmds = {
     "-sss": ("single-switch-sizing", "Compute the MOS Switch sizing", switch_sizing_console_parsing),
 }
 
+# define the arguments of each subparser
 __cmd_args = {
     "-cs": {
         "-s": ("--specs-file", "The path to the specifications file", "<file path>", str, "opt"), 

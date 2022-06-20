@@ -149,7 +149,7 @@ def devices_sizing(devices:Devices, plut:DataFrame, nlut:DataFrame, output_dir:s
         print(devices)
     # output the sizing results to a yaml file
     devices.__data_frame__().to_json(os.path.join(output_dir, "devices.json"))
-    devices.__data_frame__().to_json(os.path.join(output_dir, "devices.csv"))
+    devices.__data_frame__().to_csv(os.path.join(output_dir, "devices.csv"))
     devices.__data_frame__().to_markdown(os.path.join(output_dir, "devices.md"))
     devices.__data_frame__().to_latex(os.path.join(output_dir, "devices.tex"))
 
