@@ -20,6 +20,8 @@ from modelling_utils import (
 luts_parent_dir = "./src/data/luts"
 parent_dir = "./src/gost"
 output_dir = "./src/data/output"
+
+
 class TestGMoverIDSizing(unittest.TestCase):
     def test_version(self):
         self.assertEqual(__version__, "0.1.1")
@@ -159,8 +161,8 @@ class TestGMoverIDSizing(unittest.TestCase):
         print(sys._getframe().f_code.co_name)
         argv = [
             "cell-sizing",
-
-            "-s", "./resources/specs.toml",
+            "-s",
+            "./resources/specs.toml",
         ]
         with self.assertRaises(SystemExit):
             cli(argv)
@@ -169,8 +171,8 @@ class TestGMoverIDSizing(unittest.TestCase):
         print(sys._getframe().f_code.co_name)
         argv = [
             "varactor-sizing",
-
-            "-s", "./resources/vspecs.toml",
+            "-s",
+            "./resources/vspecs.toml",
         ]
         with self.assertRaises(SystemExit):
             cli(argv)
@@ -179,9 +181,8 @@ class TestGMoverIDSizing(unittest.TestCase):
         print(sys._getframe().f_code.co_name)
         argv = [
             "switch-sizing",
-
-            "-s", "./resources/sspecs.toml",
-
+            "-s",
+            "./resources/sspecs.toml",
         ]
         with self.assertRaises(SystemExit):
             cli(argv)
