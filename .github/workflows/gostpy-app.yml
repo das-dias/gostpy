@@ -15,7 +15,7 @@ permissions:
 jobs:
   build:
 
-    runs-on: ubuntu-latest, macos-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -23,17 +23,26 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
+    - uses: Gr1N/setup-poetry@v7
+      with:
+        poetry-version: "1.1.13"
+    - run: poetry --version
     - name: Install dependencies
+    # poetry install installs all the dependencies, so the final line is not necessary
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest
+        poetry install
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Check Dycifer Version
+      run: |
+        poetry run dycifer --version
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+    - name: Test with unittest
       run: |
-        pytest
+        poetry run python -m unittest tests/test_gost.py
