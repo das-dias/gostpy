@@ -16,11 +16,10 @@ from modelling_utils import (
     read_data,
 )
 
-luts_parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/src/data/luts"
-parent_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/src/gost"
-output_dir = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/src/data/output"
 
-
+luts_parent_dir = "./src/data/luts"
+parent_dir = "./src/gost"
+output_dir = "./src/data/output"
 class TestGMoverIDSizing(unittest.TestCase):
     def test_version(self):
         self.assertEqual(__version__, "0.1.1")
@@ -160,8 +159,8 @@ class TestGMoverIDSizing(unittest.TestCase):
         print(sys._getframe().f_code.co_name)
         argv = [
             "cell-sizing",
-            "-s",
-            "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/resources/specs.toml",
+
+            "-s", "./resources/specs.toml",
         ]
         with self.assertRaises(SystemExit):
             cli(argv)
@@ -170,8 +169,8 @@ class TestGMoverIDSizing(unittest.TestCase):
         print(sys._getframe().f_code.co_name)
         argv = [
             "varactor-sizing",
-            "-s",
-            "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/resources/vspecs.toml",
+
+            "-s", "./resources/vspecs.toml",
         ]
         with self.assertRaises(SystemExit):
             cli(argv)
@@ -180,8 +179,9 @@ class TestGMoverIDSizing(unittest.TestCase):
         print(sys._getframe().f_code.co_name)
         argv = [
             "switch-sizing",
-            "-s",
-            "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/resources/sspecs.toml",
+
+            "-s", "./resources/sspecs.toml",
+
         ]
         with self.assertRaises(SystemExit):
             cli(argv)
