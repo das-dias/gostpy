@@ -58,7 +58,7 @@ def main():
     for folder in __folders.keys():
         path = os.path.join(__input_data_path, folder)
         if os.path.exists(path):
-            logger.info(f"Loading {folder} data...")
+            #logger.info(f"Loading {folder} data...")
             for file in os.listdir(path):
                 if file.endswith(".csv"):
                     try:
@@ -66,7 +66,7 @@ def main():
                         lut = read_lut(os.path.join(path, file))
                         # adjoint the data to the existing data
                         __folders[folder] = pd.concat( [__folders[folder], lut], ignore_index=True)
-                        logger.info(f"Loaded {file}")
+                        #logger.info(f"Loaded {file}")
                     except Exception as ex:
                         logger.warning(traceback.format_exc())
             print()
@@ -85,7 +85,7 @@ def main():
             try:
                 if format == "csv":
                     if not df.empty:
-                        logger.info(f"Saving {fname} to {__luts_path}")
+                        #logger.info(f"Saving {fname} to {__luts_path}")
                         df.to_csv(os.path.join(__luts_path, f"{fname}.csv"))
             except Exception as ex:
                 logger.warning(f"Failed to write the file: {fname}.{format}")

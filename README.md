@@ -1,4 +1,4 @@
-![algarvia_1.png](docs/algarvia_1.png)
+![algarvia_1.png](./docs/imgs/gost.png)
 # GOST - Gm Over id Sizing Tool
 
 ```GOST``` is a tool dedicated to aiding analog integrated circuit designers sizing the devices integrating the circuits being designed through the use of the Gm (transconductance) over Id (Drain-Source) (Gm/Id) design methodology.
@@ -202,7 +202,7 @@ w          5.764411e-05
 
 Graphical results will also be generated when performing transistor and switch sizing operations. In the case of the sizing of transistors, the graphs will present the curves of dependance between the transistor’s intrinsic gain, maximum operating frequency and transconductance efficiency towards the variation of the level of inversion through the variation of the Vgs voltage.
 
-![m0-gm_over_id.png](docs/m0-gm_over_id.png)
+![m0-gm_over_id.png](./docs/imgs/m0-gm_over_id.png)
 
 ---
 

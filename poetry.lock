@@ -379,7 +379,7 @@ dev = ["pytest (>=4.6.2)", "black (>=19.3b0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.11"
-content-hash = "da46c56c2dfeca2a33320dac013267f92fbc323601b597b43a0d22fbdee4a863"
+content-hash = "5f6621622e60bf9208b77d256f26d21239499d4a374f60162f681533592e176b"
 
 [metadata.files]
 argparse = [

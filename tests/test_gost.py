@@ -4,6 +4,7 @@ from gost.utils import load_luts
 from gost.varactor_sizing import varactor_sizing
 from gost.cell_sizing import cell_sizing
 from gost.switch_sizing import switch_sizing
+import sys
 
 import unittest
 from pandas import DataFrame
@@ -92,15 +93,18 @@ class TestGMoverIDSizing(unittest.TestCase):
         switch_sizing(device, lut, output_dir, verbose=True)
     
     def test_cli(self):
+        print(sys._getframe().f_code.co_name)
         with self.assertRaises(SystemExit):
-            cli()
+            cli(["-h"])
     
     def test_inserting_help_subparser_cli(self):
+        print(sys._getframe().f_code.co_name)
         argv = ["single-cell-sizing"]
         with self.assertRaises(SystemExit):
             cli(argv)
     
     def test_single_cell_sizing_cli(self):
+        print(sys._getframe().f_code.co_name)
         argv = [
             "single-cell-sizing",
             "-t", "nch",
@@ -114,6 +118,7 @@ class TestGMoverIDSizing(unittest.TestCase):
             cli(argv)
     
     def test_single_switch_sizing_cli(self):
+        print(sys._getframe().f_code.co_name)
         argv = [
             "single-switch-sizing",
             "-t", "nch",
@@ -125,6 +130,7 @@ class TestGMoverIDSizing(unittest.TestCase):
             cli(argv)
             
     def test_single_varactor_sizing_cli(self):
+        print(sys._getframe().f_code.co_name)
         argv = [
             "single-varactor-sizing",
             "-t", "pch",
@@ -136,6 +142,7 @@ class TestGMoverIDSizing(unittest.TestCase):
             cli(argv)
     
     def test_cell_sizing_cli(self):
+        print(sys._getframe().f_code.co_name)
         argv = [
             "cell-sizing",
             "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/resources/specs.toml",
@@ -144,6 +151,7 @@ class TestGMoverIDSizing(unittest.TestCase):
             cli(argv)
     
     def test_varactor_sizing_cli(self):
+        print(sys._getframe().f_code.co_name)
         argv = [
             "varactor-sizing",
             "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/resources/vspecs.toml",
@@ -152,6 +160,7 @@ class TestGMoverIDSizing(unittest.TestCase):
             cli(argv)
     
     def test_switch_sizing_cli(self):
+        print(sys._getframe().f_code.co_name)
         argv = [
             "switch-sizing",
             "-s", "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/gostpy/resources/sspecs.toml",
