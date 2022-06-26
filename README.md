@@ -113,37 +113,8 @@ OR
 poetry run gost —help
 ```
 
-An output like this will appear:
+![asking-help](./docs/imgs/gost-help.gif)
 
-```
-usage: gost [-h] [-q | -v] {cell-sizing,varactor-sizing,switch-sizing,single-cell-sizing,single-varactor-sizing,single-switch-sizing} ...
-
-Gm / Id Device Sizing Tool by Diogo André Silvares Dias (das.dias6@gmail.com)
-
-positional arguments:
-
-{cell-sizing,varactor-sizing,switch-sizing,single-cell-sizing,single-varactor-sizing,single-switch-sizing}
-
-cell-sizing         Compute the transistor sizing
-varactor-sizing     Compute the MOS Capacitor sizing
-switch-sizing       Compute the MOS Switch sizing
-single-cell-sizing  Compute the transistor sizing
-
-single-varactor-sizing
-
-Compute the MOS Capacitor sizing
-
-single-switch-sizing
-
-Compute the MOS Switch sizing
-
-optional arguments:
-
--h, --help            show this help message and exit
--q, --quiet           quiet verbose
--v, --verbose         print verbose
-
-```
 ---
 *Device Sizing Secondary-Frames:*
 
