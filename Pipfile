@@ -1,0 +1,35 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+argparse = "==1.4.0"
+colorama = "==0.4.5"
+cycler = "==0.11.0"
+fonttools = "==4.33.3"
+kiwisolver = "==1.4.3"
+loguru = "==0.6.0"
+matplotlib = "==3.5.2"
+modelling-utils = "==0.2.11"
+numpy = "==1.22.4"
+pandas = "==1.4.2"
+pillow = "==9.1.1"
+pyfiglet = "==0.8.post1"
+pyparsing = "==3.0.9"
+python-dateutil = "==2.8.2"
+pytz = "==2022.1"
+pyyaml = "==6.0"
+scipy = "==1.8.1"
+seaborn = "==0.11.2"
+setuptools-scm = "==6.4.2"
+six = "==1.16.0"
+tabulate = "==0.8.9"
+toml = "==0.10.2"
+tomli = "==2.0.1"
+win32-setctime = "==1.1.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"

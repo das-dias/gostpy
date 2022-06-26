@@ -8,8 +8,14 @@ from loguru import logger as log
 
 from pyfiglet import Figlet
 
-from gost.cell_sizing import gmoverid_cell_sizing_toml_parsing, gmoverid_cell_sizing_console_parsing
-from gost.varactor_sizing import varactor_sizing_toml_parsing, varactor_sizing_console_parsing
+from gost.cell_sizing import (
+    gmoverid_cell_sizing_toml_parsing,
+    gmoverid_cell_sizing_console_parsing,
+)
+from gost.varactor_sizing import (
+    varactor_sizing_toml_parsing,
+    varactor_sizing_console_parsing,
+)
 from gost.switch_sizing import switch_sizing_toml_parsing, switch_sizing_console_parsing
 from gost.utils import getParent
 
@@ -17,63 +23,231 @@ from functools import wraps
 import traceback
 
 __file_dir__ = os.path.realpath(getParent(__file__))
-#__file_dir__ = os.path.realpath(__file__)
+# __file_dir__ = os.path.realpath(__file__)
 __io_json__ = os.path.join(__file_dir__, "io.json")
 __author__ = "Diogo André Silvares Dias"
 __email__ = "das.dias6@gmail.com"
 
 # define the subparsers
 __cmds = {
-    #"-ll": ("-load-lut", "Load the LUT data from the csv files", load_luts),
-    "-cs": ("cell-sizing", "Compute the transistor sizing", gmoverid_cell_sizing_toml_parsing),
-    "-vs": ("varactor-sizing", "Compute the MOS Capacitor sizing", varactor_sizing_toml_parsing),
-    "-ss": ("switch-sizing", "Compute the MOS Switch sizing", switch_sizing_toml_parsing),
-    "-scs": ("single-cell-sizing", "Compute the transistor sizing", gmoverid_cell_sizing_console_parsing),
-    "-svs": ("single-varactor-sizing", "Compute the MOS Capacitor sizing", varactor_sizing_console_parsing),
-    "-sss": ("single-switch-sizing", "Compute the MOS Switch sizing", switch_sizing_console_parsing),
+    # "-ll": ("-load-lut", "Load the LUT data from the csv files", load_luts),
+    "-cs": (
+        "cell-sizing",
+        "Compute the transistor sizing",
+        gmoverid_cell_sizing_toml_parsing,
+    ),
+    "-vs": (
+        "varactor-sizing",
+        "Compute the MOS Capacitor sizing",
+        varactor_sizing_toml_parsing,
+    ),
+    "-ss": (
+        "switch-sizing",
+        "Compute the MOS Switch sizing",
+        switch_sizing_toml_parsing,
+    ),
+    "-scs": (
+        "single-cell-sizing",
+        "Compute the transistor sizing",
+        gmoverid_cell_sizing_console_parsing,
+    ),
+    "-svs": (
+        "single-varactor-sizing",
+        "Compute the MOS Capacitor sizing",
+        varactor_sizing_console_parsing,
+    ),
+    "-sss": (
+        "single-switch-sizing",
+        "Compute the MOS Switch sizing",
+        switch_sizing_console_parsing,
+    ),
 }
 
 # define the arguments of each subparser
 __cmd_args = {
     "-cs": {
-        "-s": ("--specs-file", "The path to the specifications file", "FILEPATH", str, ""), 
-        "-o": ("--output-dir", "The path to the output folder", "DIRECTORY", str, "opt"),
+        "-s": (
+            "--specs-file",
+            "The path to the specifications file",
+            "FILEPATH",
+            str,
+            "",
+        ),
+        "-o": (
+            "--output-dir",
+            "The path to the output folder",
+            "DIRECTORY",
+            str,
+            "opt",
+        ),
     },
     "-vs": {
-        "-s": ("--specs-file", "The path to the specifications file", "FILEPATH", str, ""), 
-        "-o": ("--output-dir", "The path to the output folder", "DIRECTORY", str, "opt"),
+        "-s": (
+            "--specs-file",
+            "The path to the specifications file",
+            "FILEPATH",
+            str,
+            "",
+        ),
+        "-o": (
+            "--output-dir",
+            "The path to the output folder",
+            "DIRECTORY",
+            str,
+            "opt",
+        ),
     },
     "-ss": {
-        "-s": ("--specs-file", "The path to the specifications file", "FILEPATH", str, ""), 
-        "-o": ("--output-dir", "The path to the output folder", "DIRECTORY", str, "opt"),
+        "-s": (
+            "--specs-file",
+            "The path to the specifications file",
+            "FILEPATH",
+            str,
+            "",
+        ),
+        "-o": (
+            "--output-dir",
+            "The path to the output folder",
+            "DIRECTORY",
+            str,
+            "opt",
+        ),
     },
     "-scs": {
-        "-t": ("--type", "The device channel type [nch - nmos, pch - pmos]", "<pch or nch>", str, ""), 
-        "-vds": ("--v-drain-source", "The drain to source voltage", "VOLTAGE", str, "opt"),
-        "-vsd": ("--v-source-drain", "The source to drain voltage", "VOLTAGE", str, "opt"),
-        "-vsb": ("--v-source-bulk", "The source to bulk voltage", "VOLTAGE", str, "opt"),
-        "-vbs": ("--v-bulk-source", "The bulk to source voltage", "VOLTAGE", str, "opt"),
+        "-t": (
+            "--type",
+            "The device channel type [nch - nmos, pch - pmos]",
+            "<pch or nch>",
+            str,
+            "",
+        ),
+        "-vds": (
+            "--v-drain-source",
+            "The drain to source voltage",
+            "VOLTAGE",
+            str,
+            "opt",
+        ),
+        "-vsd": (
+            "--v-source-drain",
+            "The source to drain voltage",
+            "VOLTAGE",
+            str,
+            "opt",
+        ),
+        "-vsb": (
+            "--v-source-bulk",
+            "The source to bulk voltage",
+            "VOLTAGE",
+            str,
+            "opt",
+        ),
+        "-vbs": (
+            "--v-bulk-source",
+            "The bulk to source voltage",
+            "VOLTAGE",
+            str,
+            "opt",
+        ),
         "-l": ("--length", "The length of the transistor's channel", "LENGTH", str, ""),
-        "-gi": ("--gm-over-id", "The device\'s transconductance efficiency", "<gm/id value>", str, ""),
-        "-id": ("--drive-current", "The driving current of the transistor", "<current>", str, ""),
-        "-o": ("--output-dir", "The path to the output folder", "DIRECTORY", str, "opt")
+        "-gi": (
+            "--gm-over-id",
+            "The device's transconductance efficiency",
+            "<gm/id value>",
+            str,
+            "",
+        ),
+        "-id": (
+            "--drive-current",
+            "The driving current of the transistor",
+            "<current>",
+            str,
+            "",
+        ),
+        "-o": (
+            "--output-dir",
+            "The path to the output folder",
+            "DIRECTORY",
+            str,
+            "opt",
+        ),
     },
     "-svs": {
-        "-t": ("--type", "The device channel type [nch - nmos, pch - pmos]", "<pch or nch>", str, ""),
-        "-vgs": ("--v-gate-source", "The voltage applied to the terminals of the N channel varactor", "VOLTAGE", str, "opt"),
-        "-vsg": ("--v-source-gate", "The voltage applied to the terminals of the P channel varactor", "VOLTAGE", str, "opt"),
+        "-t": (
+            "--type",
+            "The device channel type [nch - nmos, pch - pmos]",
+            "<pch or nch>",
+            str,
+            "",
+        ),
+        "-vgs": (
+            "--v-gate-source",
+            "The voltage applied to the terminals of the N channel varactor",
+            "VOLTAGE",
+            str,
+            "opt",
+        ),
+        "-vsg": (
+            "--v-source-gate",
+            "The voltage applied to the terminals of the P channel varactor",
+            "VOLTAGE",
+            str,
+            "opt",
+        ),
         "-l": ("--length", "The length of the transistor's channel", "LENGTH", str, ""),
-        "-cvar": ("--cap-varactor", "The device\'s total gate to bulk capacitance", "<capacitance>", str, ""),
-        "-o": ("--output-dir", "The path to the output folder", "DIRECTORY", str, "opt")
+        "-cvar": (
+            "--cap-varactor",
+            "The device's total gate to bulk capacitance",
+            "<capacitance>",
+            str,
+            "",
+        ),
+        "-o": (
+            "--output-dir",
+            "The path to the output folder",
+            "DIRECTORY",
+            str,
+            "opt",
+        ),
     },
     "-sss": {
-        "-t": ("--type", "The device channel type [nch - nmos, pch - pmos]", "<pch or nch>", str, ""),
-        "-vgs": ("--v-gate-source", "The voltage applied to the terminals of the N channel varactor", "VOLTAGE", str, "opt"),
-        "-vsg": ("--v-source-gate", "The voltage applied to the terminals of the P channel varactor", "VOLTAGE", str, "opt"),
-        "-rds": ("--on-resistance", "The device\'s ON resistance", "RESISTANCE", str, ""),
+        "-t": (
+            "--type",
+            "The device channel type [nch - nmos, pch - pmos]",
+            "<pch or nch>",
+            str,
+            "",
+        ),
+        "-vgs": (
+            "--v-gate-source",
+            "The voltage applied to the terminals of the N channel varactor",
+            "VOLTAGE",
+            str,
+            "opt",
+        ),
+        "-vsg": (
+            "--v-source-gate",
+            "The voltage applied to the terminals of the P channel varactor",
+            "VOLTAGE",
+            str,
+            "opt",
+        ),
+        "-rds": (
+            "--on-resistance",
+            "The device's ON resistance",
+            "RESISTANCE",
+            str,
+            "",
+        ),
         "-l": ("--length", "The length of the transistor's channel", "LENGTH", str, ""),
-        "-o": ("--output-dir", "The path to the output folder", "DIRECTORY", str, "opt")
-    }
+        "-o": (
+            "--output-dir",
+            "The path to the output folder",
+            "DIRECTORY",
+            str,
+            "opt",
+        ),
+    },
 }
 
 
@@ -86,10 +260,13 @@ def mapSubparserToFun(func, subparser):
     Returns:
         result (_type_): result of the callback function
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         return func(subparser, *args, **kwargs)
+
     return wrapper
+
 
 def setupParser(
     cmds: dict,
@@ -103,6 +280,7 @@ def setupParser(
 ) -> argparse.ArgumentParser:
     from colorama import init, Fore, Back, Style
     import re
+
     """_summary_
     Sets up the command line parser.
     Args:
@@ -235,13 +413,9 @@ def setupParser(
         optional = subparser._action_groups.pop()
         required = subparser.add_argument_group("required arguments")
         if bool(args.get("all")):
-            for arg, (
-                arg_literal,
-                arg_desc,
-                arg_metavar,
-                arg_type,
-                arg_opt,
-            ) in args["all"].items():
+            for arg, (arg_literal, arg_desc, arg_metavar, arg_type, arg_opt,) in args[
+                "all"
+            ].items():
                 if arg_type in [bool, None]:
                     subparser.add_argument(
                         arg,
@@ -295,6 +469,7 @@ def setupParser(
         subparser._action_groups.append(optional)
     return parser
 
+
 def cli(argv=None) -> None:
     """_summary_
     Command Line Interface entry point for user interaction.
@@ -322,7 +497,7 @@ def cli(argv=None) -> None:
     try:
         args = parser.parse_args(argv)
         try:
-            args.func(argv, data_dir=__file_dir__, io_json = __io_json__)
+            args.func(argv, data_dir=__file_dir__, io_json=__io_json__)
         except Exception as e:
             log.error(traceback.format_exc())
     except argparse.ArgumentError as e:  # catching unknown arguments

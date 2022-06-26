@@ -6,8 +6,9 @@ from numpy.linalg import norm
 from pandas import DataFrame
 import traceback
 import warnings
+
 warnings.filterwarnings("ignore")
-from modelling_utils import(
+from modelling_utils import (
     MosCell,
     Devices,
     timer,
@@ -15,6 +16,7 @@ from modelling_utils import(
     read_data,
 )
 import argparse
+
 
 def varactor_sizing_console_parsing(subparser, *args, **kwargs):
     """
@@ -36,14 +38,14 @@ def varactor_sizing_console_parsing(subparser, *args, **kwargs):
         argv = subparser.parse_args(sysargs[1:])
     except Exception as e:
         log.error(traceback.format_exc())
-    
+
     # handle optional mutually exclusive arguments
-    if not(bool(argv.v_source_gate) or bool(argv.v_gate_source) ):
+    if not (bool(argv.v_source_gate) or bool(argv.v_gate_source)):
         raise ValueError("At least two of the following DOF -vgs or -vsg are required")
-    
+
     if bool(argv.v_source_gate) and bool(argv.v_gate_source):
         raise ValueError("-vsg and -vgs are mutually exclusive")
-    
+
     # extract device parameters
     device = MosCell()
     device.__parse_data__("type", argv.type[0])
@@ -58,15 +60,18 @@ def varactor_sizing_console_parsing(subparser, *args, **kwargs):
     with open(io_json, "r") as f:
         io = json.load(f)
     luts_path = io.get("__luts_path__")
-    output_data_path = argv.output_dir[0] if bool(argv.output_dir) else io.get("__output_data_path__")
+    output_data_path = (
+        argv.output_dir[0] if bool(argv.output_dir) else io.get("__output_data_path__")
+    )
     lut_name = "pvaractor.csv" if device.type == "pch" else "nvaractor.csv"
-    
+
     # load lut data
     load_luts(data_path)
     # read lut data from memory
     lut = read_data(os.path.join(luts_path, lut_name))
     # perform sizing
-    varactor_sizing(device,lut, output_data_path, verbose=True)
+    varactor_sizing(device, lut, output_data_path, verbose=True)
+
 
 def varactor_sizing_toml_parsing(subparser, *args, **kwargs):
     """
@@ -81,15 +86,15 @@ def varactor_sizing_toml_parsing(subparser, *args, **kwargs):
     """
     argv = None
     sysargs = args[0]
-    data_path=kwargs.get("data_dir")
-    io_json=kwargs.get("io_json")
+    data_path = kwargs.get("data_dir")
+    io_json = kwargs.get("io_json")
     try:
         argv = subparser.parse_args(sysargs[1:])
     except Exception as e:
         log.error(traceback.format_exc())
     # proceed with the extraction of arguments
     # handle mutually exclusive arguments
-    specs_file=argv.specs_file[0] if bool(argv.specs_file) else ""
+    specs_file = argv.specs_file[0] if bool(argv.specs_file) else ""
     devices = None
     try:
         devices = read_specs(specs_file)
@@ -100,9 +105,11 @@ def varactor_sizing_toml_parsing(subparser, *args, **kwargs):
     with open(io_json, "r") as f:
         io = json.load(f)
     luts_path = io.get("__luts_path__")
-    output_data_path = argv.output_dir[0] if bool(argv.output_dir) else io.get("__output_data_path__")
+    output_data_path = (
+        argv.output_dir[0] if bool(argv.output_dir) else io.get("__output_data_path__")
+    )
     # from the arguments, extract the necessary info to proceed with the computation
-    plut_name = "pvaractor.csv" 
+    plut_name = "pvaractor.csv"
     nlut_name = "nvaractor.csv"
     # load lut data
     load_luts(data_path)
@@ -110,9 +117,15 @@ def varactor_sizing_toml_parsing(subparser, *args, **kwargs):
     plut = read_data(os.path.join(luts_path, plut_name))
     nlut = read_data(os.path.join(luts_path, nlut_name))
     varactors_sizing(devices, plut, nlut, output_data_path, verbose=True)
-    
 
-def varactors_sizing(devices:Devices, plut:DataFrame, nlut:DataFrame, output_dir:str = "./", verbose:bool = False):
+
+def varactors_sizing(
+    devices: Devices,
+    plut: DataFrame,
+    nlut: DataFrame,
+    output_dir: str = "./",
+    verbose: bool = False,
+):
     """_summary_
     Function to compute the transistor sizing for all
     extracted devices
@@ -127,20 +140,31 @@ def varactors_sizing(devices:Devices, plut:DataFrame, nlut:DataFrame, output_dir
     out_row = None
     for dev_name, device in devices.varactors.items():
         if device.type == "pch":
-            varactor_sizing(device, plut, output_dir, verbose = False)
+            varactor_sizing(device, plut, output_dir, verbose=False)
         else:
-            varactor_sizing(device, nlut, output_dir, verbose = False)
+            varactor_sizing(device, nlut, output_dir, verbose=False)
     # for each device, compute the sizing
     if verbose:
         print(devices)
     # output the sizing results to a yaml file
-    devices.__data_frame__(dev_type = "varactor").to_json(os.path.join(output_dir, "varactors.json"))
-    devices.__data_frame__(dev_type = "varactor").to_json(os.path.join(output_dir, "varactors.csv"))
-    devices.__data_frame__(dev_type = "varactor").to_markdown(os.path.join(output_dir, "varactors.md"))
-    devices.__data_frame__(dev_type = "varactor").to_latex(os.path.join(output_dir, "varactors.tex"))
+    devices.__data_frame__(dev_type="varactor").to_json(
+        os.path.join(output_dir, "varactors.json")
+    )
+    devices.__data_frame__(dev_type="varactor").to_json(
+        os.path.join(output_dir, "varactors.csv")
+    )
+    devices.__data_frame__(dev_type="varactor").to_markdown(
+        os.path.join(output_dir, "varactors.md")
+    )
+    devices.__data_frame__(dev_type="varactor").to_latex(
+        os.path.join(output_dir, "varactors.tex")
+    )
+
 
 @timer
-def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbose:bool = False):
+def varactor_sizing(
+    device: MosCell, lut: DataFrame, output_dir: str = "./", verbose: bool = False
+):
     """_summary_
     Function to compute the transistor sizing for a given device
     Args:
@@ -150,7 +174,7 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
     if verbose:
         log.info(f"Computing {device.name} varactor sizing...")
     # retrieve the device's control parameters
-    l = device.l # length
+    l = device.l  # length
     cvar = device.cvar
     # cvar = cgg + cgs + cgd
     vgs = np.abs(device.vgs)
@@ -160,37 +184,53 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
         if len(pt2) != len(pt1):
             raise ValueError("The two points must have the same dimension")
         ws = np.array(weights) if len(weights) == len(pt1) else np.ones(len(pt1))
-        vec = np.multiply(np.array(pt2)-np.array(pt1), ws)
+        vec = np.multiply(np.array(pt2) - np.array(pt1), ws)
         return norm(vec, p)
+
     new_lut = lut.copy()
-    new_lut["cvar"] = new_lut["cgg"]+new_lut["cgs"]+new_lut["cgd"]
-    columns = ["l","vgs"] if device.type == "nch" else ["l", "vsg" ]
-    control= {k:v for k,v in zip(columns, [l, vgs])}
-    norm_weights = [1/new_lut[col].max() for col in control.keys()]
+    new_lut["cvar"] = new_lut["cgg"] + new_lut["cgs"] + new_lut["cgd"]
+    columns = ["l", "vgs"] if device.type == "nch" else ["l", "vsg"]
+    control = {k: v for k, v in zip(columns, [l, vgs])}
+    norm_weights = [1 / new_lut[col].max() for col in control.keys()]
     # compute the closest vsd and vsb values to the parsed values
     # and limit the look up table to those values
-    control_dists = new_lut.apply(weighted_norm, axis=1, args=( list(control.values()), ), cols=list(control.keys()), weights=norm_weights )
-    control_row = new_lut[ new_lut.apply(weighted_norm, axis=1, args=( list(control.values()), ), cols=list(control.keys()), weights=norm_weights ) == np.min(control_dists) ].copy()
+    control_dists = new_lut.apply(
+        weighted_norm,
+        axis=1,
+        args=(list(control.values()),),
+        cols=list(control.keys()),
+        weights=norm_weights,
+    )
+    control_row = new_lut[
+        new_lut.apply(
+            weighted_norm,
+            axis=1,
+            args=(list(control.values()),),
+            cols=list(control.keys()),
+            weights=norm_weights,
+        )
+        == np.min(control_dists)
+    ].copy()
     old_width = control_row["w"].values[0]
     # for all the entries corresponding to the control vds and vsb given,
     # compute the new table entries
-    
+
     # create cvar column
     query = f"{columns[0]}=={control_row[columns[0]].values[0]} & {columns[1]}=={control_row[columns[1]].values[0]}"
     # changed: added channel length - l - as a query control variable!
     new_lut = new_lut[new_lut.eval(query)].copy()
-    
-    new_lut["w"] = old_width*(cvar/control_row['cvar'].values[0])
-    new_lut["gds"] = new_lut["gds"]*(new_lut["w"]/old_width)
-    new_lut["rds"] = 1/new_lut["gds"]
-    #new_lut["self_gain"] = [gm/gds for gm, gds in zip(new_lut["gm"], new_lut["gds"])]
-    new_lut["cgs"] = new_lut["cgs"]*(new_lut["w"]/old_width)
-    new_lut["cgd"] = new_lut["cgd"]*(new_lut["w"]/old_width)
-    new_lut["csb"] = new_lut["csb"]*(new_lut["w"]/old_width)
-    new_lut["cdb"] = new_lut["cdb"]*(new_lut["w"]/old_width)
-    new_lut["cgg"] = new_lut["cgg"]*(new_lut["w"]/old_width)
+
+    new_lut["w"] = old_width * (cvar / control_row["cvar"].values[0])
+    new_lut["gds"] = new_lut["gds"] * (new_lut["w"] / old_width)
+    new_lut["rds"] = 1 / new_lut["gds"]
+    # new_lut["self_gain"] = [gm/gds for gm, gds in zip(new_lut["gm"], new_lut["gds"])]
+    new_lut["cgs"] = new_lut["cgs"] * (new_lut["w"] / old_width)
+    new_lut["cgd"] = new_lut["cgd"] * (new_lut["w"] / old_width)
+    new_lut["csb"] = new_lut["csb"] * (new_lut["w"] / old_width)
+    new_lut["cdb"] = new_lut["cdb"] * (new_lut["w"] / old_width)
+    new_lut["cgg"] = new_lut["cgg"] * (new_lut["w"] / old_width)
     new_lut["cvar"] = new_lut["cgg"] + new_lut["cgs"] + new_lut["cgd"]
-    #new_lut["ft"] = [compute_ft(gm, cgs, cgd, csb, cdb) for gm, cgs, cgd, csb, cdb in zip(new_lut["gm"], new_lut["cgs"], new_lut["cgd"], new_lut["csb"], new_lut["cdb"])]
+    # new_lut["ft"] = [compute_ft(gm, cgs, cgd, csb, cdb) for gm, cgs, cgd, csb, cdb in zip(new_lut["gm"], new_lut["cgs"], new_lut["cgd"], new_lut["csb"], new_lut["cdb"])]
     # ft, gm/gds, gm/id and vearly all width independant parameters
     vgs_col = columns[-1]
     """
@@ -213,12 +253,18 @@ def varactor_sizing(device:MosCell, lut:DataFrame, output_dir:str = "./", verbos
     output_vgs = control_row[vgs_col].values[0]
     query = f"{vgs_col}=={output_vgs}"
     output_row = new_lut[new_lut.eval(query)]
-    
+
     # build device data
     for col in output_row.columns:
         if col in [var for var in dir(device) if not var.startswith("__")]:
             setattr(device, col, output_row[col].values[0])
-    output_row = output_row[[col for col in [var for var in dir(device) if not var.startswith("__")] if col in output_row.columns]].set_index(vgs_col)
+    output_row = output_row[
+        [
+            col
+            for col in [var for var in dir(device) if not var.startswith("__")]
+            if col in output_row.columns
+        ]
+    ].set_index(vgs_col)
     if verbose:
         log.info("Varactor sizing completed.")
         print(f"Varactor : {device.name}")

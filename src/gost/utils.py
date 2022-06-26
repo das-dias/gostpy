@@ -4,7 +4,8 @@ import numpy as np
 from loguru import logger as log
 import sys
 
-def getParent(path, levels = 0):
+
+def getParent(path, levels=0):
     """_summary_
     Get the parent directory of a path
     according to the specified level of
@@ -14,9 +15,10 @@ def getParent(path, levels = 0):
         levels  (int)   : number of levels to go up in the tree
     """
     common = path
-    for _ in range(levels+1):
+    for _ in range(levels + 1):
         common = os.path.dirname(os.path.abspath(common))
     return common
+
 
 def load_luts(directory_path):
     """

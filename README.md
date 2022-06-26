@@ -21,16 +21,27 @@ After providing the necessary simulation data to the input directory, the tool w
 
 ## Dependencies
 
-- ```Poetry``` - Python language’s most famous and best package manager, allowing to quickly deploy any application or package written in Python ([https://python-poetry.org/docs/](https://python-poetry.org/docs/))
+- ```Poetry``` - [Poetry]((https://python-poetry.org/docs/)) is ®Python language’s most famous and best package manager, allowing to quickly deploy any application or package.
 - SPICE simulation-generated look up tables with each device type’s direct-current (DC) operating point (OP). The data available in ```src/data/input``` was generated using ```Cadence-Virtuoso``` software, and relates to a 28 nm TSMC CMOS technology.
 
-## Installing
-After installing ```Poetry``` run the following command inside the code folder:
-```
-foo/bar/gostpy % poetry install
-```
-In this case it was considered that the application directory, ```/gostpy``` was placed inside the directory ```foo/bar/```.
+Package dependencies can be found [here](./docs/dependencies.md).
 
+## Installation 
+
+It is highly recommended to use ```Poetry``` in order to install ```GOST``` because it will automatically setup the virtual environment and package dependencies necessary to run this tool. \
+First of all, ```git-clone``` this repository into a directory:
+
+```
+git clone https://github.com/das-dias/gostpy.git
+```
+
+Alternatively, you can [download](URL "https://github.com/das-dias/gostpy/archive/refs/heads/master.zip") this repo's ```.zip``` file and extract it into a personal directory, if you don't have [git](URL "https://git-scm.com/book/en/v2/Getting-Started-Installing-Git") installed in your machine.
+
+Next, using ```Poetry```, inside the downloaded repository directory, run the installation command:
+
+```
+poetry install
+```
 
 ## Methodology
 
