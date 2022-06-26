@@ -23,10 +23,10 @@ def varactor_sizing_console_parsing(subparser, *args, **kwargs):
     Function to call the script that will computes
     transistor sizing from the parsed specification data.
     Args:
-        specifications_file_path (str): The path to the .toml 
+        specifications_file_path (str): The path to the .toml
             file containing the specifications for each device
     Returns:
-        None: all the output of the script will be 
+        None: all the output of the script will be
             written to console, output files and image files
     """
     argv = None
@@ -78,10 +78,10 @@ def varactor_sizing_toml_parsing(subparser, *args, **kwargs):
     Function to call the script that will computes
     transistor sizing from the parsed specification data.
     Args:
-        specifications_file_path (str): The path to the .toml 
+        specifications_file_path (str): The path to the .toml
             file containing the specifications for each device
     Returns:
-        None: all the output of the script will be 
+        None: all the output of the script will be
             written to console, output files and image files
     """
     argv = None

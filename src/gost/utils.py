@@ -22,7 +22,7 @@ def getParent(path, levels=0):
 
 def load_luts(directory_path):
     """
-    Load the LUT data from the csv files by using 
+    Load the LUT data from the csv files by using
     the subprocess module to call the python script
     to load the look up tables into known memory.
     Args:
