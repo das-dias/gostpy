@@ -1,3 +1,4 @@
+
 ![algarvia_1.png](./docs/imgs/gost.png)
 # GOST - Gm Over id Sizing Tool
 
@@ -154,33 +155,7 @@ The obtained console output for these sizing parameters is currently computed th
 
 The console output for the previous command will be as such:
 
-```
-2022-06-13 14:03:53.510 | **INFO**     | gost.cell_sizing:cell_sizing:165 - **Computing m0 transistor sizing...**
-2022-06-13 14:03:54.021 | **INFO**     | gost.cell_sizing:cell_sizing:224 - **Transistor sizing completed.**
-Device : m0
-vgs                 0.4
-cdb        2.180952e-14
-cgb        1.762000e-16
-cgd        9.486216e-15
-cgs        2.847118e-14
-csb        2.468672e-14
-ft         4.186684e+10
-gds        6.651629e-04
-gm         9.984962e-03
-gmbs       4.176000e-05
-gmoverid   1.997000e+01
-id         4.999981e-04
-l          6.000000e-08
-region     2.000000e+00
-self_gain  1.501130e+01
-vds        2.000000e-01
-vdsat      1.156000e-01
-vsb        0.000000e+00
-w          5.764411e-05
-2022-06-13 14:03:54.024 | **INFO**     | modelling_utils.utils:wrapper:98 -
-
-**Function: cell_sizing	Runtime: 513.834 ms.**
-```
+![cell-sizing-results](./docs/imgs/cell-sizing-result.png)
 
 Graphical results will also be generated when performing transistor and switch sizing operations. In the case of the sizing of transistors, the graphs will present the curves of dependance between the transistor’s intrinsic gain, maximum operating frequency and transconductance efficiency towards the variation of the level of inversion through the variation of the Vgs voltage.
 
@@ -209,43 +184,10 @@ vars={s0=["all"], s1=["vgs","cgs"], s2=["ft"], s3=["all"]}
 ```
 
 By running the following command:
-
 ```
 poetry run gost switch-sizing -s foo/bar/switch_specs.toml
 ```
-
-The switches ```s0``` to ```s3``` will be automatically sized, and the following output will be generated to console (along with the generated graphs):
-
-```
-2022-06-13 14:03:58.748 | **INFO**     | modelling_utils.utils:wrapper:98 -
-**Function: switch_sizing	Runtime: 7.283 ms.**
-2022-06-13 14:03:58.753 | **INFO**     | modelling_utils.utils:wrapper:98 -
-**Function: switch_sizing	Runtime: 5.055 ms.**
-2022-06-13 14:03:58.758 | **INFO**     | modelling_utils.utils:wrapper:98 -
-**Function: switch_sizing	Runtime: 4.631 ms.**
-2022-06-13 14:03:58.762 | **INFO**     | modelling_utils.utils:wrapper:98 -
-**Function: switch_sizing	Runtime: 4.459 ms.**
-
-Devices:
-- -None--
-
-Varactors:
-- -None--
-
-Switches:
-name[] type[]  vgs[V]          l[m]      w[m]  rds[Ω]        cdb[F] cdep[F] cgb[F]        cgd[F]  ... gmoverid[V^-1]  id[A]  region[] self_gain[VV^-01] vbs[V] vds[V]  vdsat[V] vsb[V] vsd[V]  vsg[V]
-
-s0     s0    nch    0.15  3.000000e-08  0.011252   100.0  4.612035e-12    None   None  1.822896e-12  ...            1.0    0.0      None              None   -0.0    0.0      None    0.0   -0.0   -0.15
-
-s1     s1    nch    0.15  3.000000e-08  0.018754    60.0  7.686725e-12    None   None  3.038160e-12  ...            1.0    0.0      None              None   -0.0    0.0      None    0.0   -0.0   -0.15
-
-s2     s2    pch   -0.15  3.000000e-08  0.061050    70.0  2.464564e-11    None   None  1.129692e-11  ...            1.0    0.0      None              None    0.0    0.0      None    0.0    0.0    0.15
-
-s3     s3    pch   -0.15  3.000000e-08  0.050277    85.0  2.029641e-11    None   None  9.303342e-12  ...            1.0    0.0      None              None    0.0    0.0      None    0.0    0.0    0.15
-
-[4 rows x 29 columns]
-```
-
+The switches ```s0``` to ```s3``` will be automatically sized, and the sizing results output will be generated to console (along with the generated graphs).
 ## Future Work
  
 Right now the tool is solemnly based on conditional queries to a previously acquired databased by the engineer/designer himself, but efforts are being made to build a multivariate regression model based on machine learning algorithms to model the data of these same databases and rely on these models to obtain the corerspondant DC OP that best accomodates our design specifications. This way, the engineer will have no problem in sizing a device with a channel length of 1.1, or 1.4 or even 1.6 times the minimum channel length of the technology - liberating themselves from the natural integers used during the simulations that resulted in the obtained look up tables.

@@ -34,9 +34,9 @@ jobs:
         pip install flake8 pytest
         poetry install
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Check Dycifer Version
+    - name: Check GOST Version
       run: |
-        poetry run dycifer --version
+        poetry run gost --version
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
