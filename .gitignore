@@ -1,2 +1,4 @@
-/resources
-/dist
+dist
+scripts
+scripts/*
+write_deps.py

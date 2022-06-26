@@ -1,0 +1,10 @@
+# all units except circuit gain are specified in International System (SI)
+[control] # control parameters for each device of the circuit
+switches=["s0","s1","s2","s3"]
+s0={type="nch", vgs="150 m", rds="100", l="30 n"}
+s1={type="nch", vgs="150 m", rds="60", l="30 n"}
+s2={type="pch", vsg="150 m", rds="70", l="30 n"}
+s3={type="pch", vsg="150 m", rds="85", l="30 n"}
+
+[spit] # output control variables
+vars={s0=["all"], s1=["vgs","cgs"], s2=["ft"], s3=["all"]}

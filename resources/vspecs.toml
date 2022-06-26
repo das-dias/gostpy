@@ -1,0 +1,11 @@
+# all units except circuit gain are specified in International System (SI)
+[control] # control parameters for each device of the circuit
+varactors=["v0","v1","v2","v3"]
+v0={type="nch", vgs="150 m", cvar="100 f", l="30 n"}
+v1={type="nch", vgs="150 m", cvar="60 f", l="60 n"}
+v2={type="pch", vsg="150 m", cvar="70 f", l="30 n"}
+v3={type="pch", vsg="150 m", cvar="85 f", l="90 n"}
+
+[spit] # output control variables
+outputdir="./output"
+vars={v0=["all"], v1=["vgs","cgs"], v2=["ft"], v3=["all"]}
