@@ -1,5 +1,6 @@
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/das-dias/gostpy/gost) ![GitHub issues](https://img.shields.io/github/issues/das-dias/gostpy) ![GitHub](https://img.shields.io/github/license/das-dias/gostpy) ![GitHub package.json version](https://img.shields.io/github/package-json/v/das-dias/gostpy)
 
-![algarvia_1.png](./docs/imgs/gost.png)
+![banner](./docs/imgs/gost.png)
 # GOST - Gm Over id Sizing Tool
 
 ```GOST``` is a tool dedicated to aiding analog integrated circuit designers sizing the devices integrating the circuits being designed through the use of the Gm (transconductance) over Id (Drain-Source) (Gm/Id) design methodology.
