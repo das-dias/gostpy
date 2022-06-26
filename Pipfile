@@ -30,6 +30,7 @@ tomli = "==2.0.1"
 win32-setctime = "==1.1.0"
 
 [dev-packages]
+black = "*"
 
 [requires]
 python_version = "3.9"
