@@ -413,13 +413,9 @@ def setupParser(
         optional = subparser._action_groups.pop()
         required = subparser.add_argument_group("required arguments")
         if bool(args.get("all")):
-            for arg, (
-                arg_literal,
-                arg_desc,
-                arg_metavar,
-                arg_type,
-                arg_opt,
-            ) in args["all"].items():
+            for arg, (arg_literal, arg_desc, arg_metavar, arg_type, arg_opt,) in args[
+                "all"
+            ].items():
                 if arg_type in [bool, None]:
                     subparser.add_argument(
                         arg,

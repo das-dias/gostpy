@@ -4,6 +4,7 @@ version = "0.1.1"
 description = "GOST (Gm Over id Sizing Tool) is a tool dedicated to aiding Analog Design engineers in the process of sizing CMOS devices."
 authors = ["dasdias <das.dias6@gmail.com>"]
 license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
