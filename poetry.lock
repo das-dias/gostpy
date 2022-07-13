@@ -94,7 +94,7 @@ python-versions = ">=3.7"
 name = "linecache2"
 version = "1.0.0"
 description = "Backports of the linecache module"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -392,7 +392,7 @@ python-versions = ">=3.7"
 name = "traceback2"
 version = "1.4.0"
 description = "Backports of the traceback module"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -408,18 +408,10 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
-name = "unittest"
-version = "0.0"
-description = ""
-category = "dev"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "unittest2"
 version = "1.1.0"
 description = "The new features in unittest backported to Python 2.4+."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -462,7 +454,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.11"
-content-hash = "b4895187a1f774abd8552f8c8c627e3cf169cf7e276cf42453db33091755a9a2"
+content-hash = "cbaa78ec66dfed7ca4f70633db4de64acc3481fff01f56c762df5432c3d019ce"
 
 [metadata.files]
 argparse = []
@@ -500,7 +492,6 @@ toml = []
 tomli = []
 traceback2 = []
 typing-extensions = []
-unittest = []
 unittest2 = []
 wcwidth = []
 win32-setctime = []
