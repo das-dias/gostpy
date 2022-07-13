@@ -91,14 +91,6 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
-name = "linecache2"
-version = "1.0.0"
-description = "Backports of the linecache module"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "loguru"
 version = "0.6.0"
 description = "Python logging made (stupidly) simple"
@@ -389,36 +381,12 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
-name = "traceback2"
-version = "1.4.0"
-description = "Backports of the traceback module"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-linecache2 = "*"
-
-[[package]]
 name = "typing-extensions"
 version = "4.3.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
 category = "main"
 optional = false
 python-versions = ">=3.7"
-
-[[package]]
-name = "unittest2"
-version = "1.1.0"
-description = "The new features in unittest backported to Python 2.4+."
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-argparse = "*"
-six = ">=1.4"
-traceback2 = "*"
 
 [[package]]
 name = "wcwidth"
@@ -454,7 +422,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.11"
-content-hash = "cbaa78ec66dfed7ca4f70633db4de64acc3481fff01f56c762df5432c3d019ce"
+content-hash = "24af002017d19d138d3fcdc074142692bb5633bd5383b00f419cd2c97c9d6851"
 
 [metadata.files]
 argparse = []
@@ -465,7 +433,6 @@ cycler = []
 fonttools = []
 importlib-metadata = []
 kiwisolver = []
-linecache2 = []
 loguru = []
 markdown = []
 matplotlib = []
@@ -490,9 +457,7 @@ six = []
 tabulate = []
 toml = []
 tomli = []
-traceback2 = []
 typing-extensions = []
-unittest2 = []
 wcwidth = []
 win32-setctime = []
 zipp = []

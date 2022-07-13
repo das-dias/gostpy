@@ -20,7 +20,6 @@ colorama = "^0.4.5"
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 Markdown = "^3.3.7"
-unittest2 = "^1.1.0"
 
 [tool.autohooks]
 mode = "pipenv"
