@@ -25,6 +25,8 @@ output_dir = "./src/data/output"
 
 def test_version():
     assert __version__ == "0.1.1"
+
+
 def test_single_cell_sizing():
     # create and setup an nmos device
     device = MosCell()
@@ -43,12 +45,14 @@ def test_single_cell_sizing():
     assert device.id == 1000 * pow(10, -6)
     luts_path = os.path.join(luts_parent_dir, "ncell.csv")
     # check if path exists
-    assert (os.path.exists(luts_path))
+    assert os.path.exists(luts_path)
     # import the luts into the program
     lut = read_data(luts_path)
     assert lut is not None
     assert isinstance(lut, DataFrame)
     cell_sizing(device, lut, output_dir, verbose=True)
+
+
 def test_single_varactor_sizing():
     # create and setup an nmos device
     device = MosCell(name="v0")
@@ -62,13 +66,15 @@ def test_single_varactor_sizing():
     assert device.cvar == 100 * pow(10, -15)
     luts_path = os.path.join(luts_parent_dir, "nvaractor.csv")
     # check if path exists
-    assert (os.path.exists(luts_path))
+    assert os.path.exists(luts_path)
     # import the luts into the program
     lut = read_data(luts_path)
     print(lut)
     assert lut is not None
     assert isinstance(lut, DataFrame)
     varactor_sizing(device, lut, output_dir, verbose=True)
+
+
 def test_single_switch_sizing():
     # create and setup an nmos device
     device = MosCell(name="s0")
@@ -81,21 +87,27 @@ def test_single_switch_sizing():
     assert device.rds == 1.0
     luts_path = os.path.join(luts_parent_dir, "nswitch.csv")
     # check if path exists
-    assert (os.path.exists(luts_path))
+    assert os.path.exists(luts_path)
     # import the luts into the program
     lut = read_data(luts_path)
     assert lut is not None
     assert isinstance(lut, DataFrame)
     switch_sizing(device, lut, output_dir, verbose=True)
+
+
 def test_cli():
     print(sys._getframe().f_code.co_name)
     with pytest.raises(SystemExit):
         cli(["-h"])
+
+
 def test_inserting_help_subparser_cli():
     print(sys._getframe().f_code.co_name)
     argv = ["single-cell-sizing"]
     with pytest.raises(SystemExit):
         cli(argv)
+
+
 def test_single_cell_sizing_cli():
     print(sys._getframe().f_code.co_name)
     argv = [
@@ -115,6 +127,8 @@ def test_single_cell_sizing_cli():
     ]
     with pytest.raises(SystemExit):
         cli(argv)
+
+
 def test_single_switch_sizing_cli():
     print(sys._getframe().f_code.co_name)
     argv = [
@@ -130,6 +144,8 @@ def test_single_switch_sizing_cli():
     ]
     with pytest.raises(SystemExit):
         cli(argv)
+
+
 def test_single_varactor_sizing_cli():
     print(sys._getframe().f_code.co_name)
     argv = [
@@ -145,6 +161,8 @@ def test_single_varactor_sizing_cli():
     ]
     with pytest.raises(SystemExit):
         cli(argv)
+
+
 def test_cell_sizing_cli():
     print(sys._getframe().f_code.co_name)
     argv = [
@@ -154,6 +172,8 @@ def test_cell_sizing_cli():
     ]
     with pytest.raises(SystemExit):
         cli(argv)
+
+
 def test_varactor_sizing_cli():
     print(sys._getframe().f_code.co_name)
     argv = [
@@ -163,6 +183,8 @@ def test_varactor_sizing_cli():
     ]
     with pytest.raises(SystemExit):
         cli(argv)
+
+
 def test_switch_sizing_cli():
     print(sys._getframe().f_code.co_name)
     argv = [
