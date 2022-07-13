@@ -6,7 +6,7 @@ from gost.cell_sizing import cell_sizing
 from gost.switch_sizing import switch_sizing
 import sys
 
-import unittest
+import unittest2 as unittest
 from pandas import DataFrame
 import os
 

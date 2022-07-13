@@ -1,0 +1,14 @@
+[control] # control parameters for each device of the circuit
+switches=["m9","m10","m8","m7","m5","m6","m2","m4","m3"]
+m9={type="nch", vgs="750 m", rds="50", l="30 n"}
+m10={type="nch", vgs="750 m", rds="50", l="30 n"}
+m8={type="nch", vgs="900 m", rds="100", l="30 n"}
+m7={type="pch", vsg="900 m", rds="100", l="30 n"}
+m5={type="pch", vsg="900 m", rds="50", l="30 n"}
+m6={type="pch", vsg="900 m", rds="100", l="30 n"}
+m2={type="nch", vgs="750 m", rds="100", l="30 n"}
+m4={type="nch", vgs="900 m", rds="100", l="30 n"}
+m3={type="nch", vgs="900 m", rds="100", l="30 n"}
+
+[spit] # output control variables
+vars={m9=["w","vgs"], m10=["w","vgs"], m8=["w","vgs"], m7=["w","vgs"], m5=["w","vgs"], m6=["w","vgs"], m2=["w","vgs"], m4=["w","vgs"], m3=["w","vgs"]} 

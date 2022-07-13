@@ -1,4 +1,3 @@
-from re import I
 from loguru import logger as log
 from gost.utils import *
 import json
