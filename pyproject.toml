@@ -18,8 +18,8 @@ modelling-utils = "^0.2.11"
 colorama = "^0.4.5"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
 Markdown = "^3.3.7"
+pytest = "^7.1.2"
 
 [tool.autohooks]
 mode = "pipenv"
