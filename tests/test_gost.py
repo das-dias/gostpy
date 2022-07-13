@@ -1,3 +1,5 @@
+import unittest
+
 from gost import __version__
 from gost.gost import cli
 from gost.utils import load_luts
@@ -6,7 +8,6 @@ from gost.cell_sizing import cell_sizing
 from gost.switch_sizing import switch_sizing
 import sys
 
-import unittest2 as unittest
 from pandas import DataFrame
 import os
 
